@@ -12,7 +12,7 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class PatternEditorViewModel
     {
-        public ObservableCollection<Pattern> Letters { get; } = new ObservableCollection<Pattern>();
+        public ObservableCollection<Pattern> Letters { get; }
 
         public Pattern CurrentLetter { get; set; }
 
@@ -22,8 +22,10 @@ namespace DataEditor
 
         public ICommand SaveToXmlCommand { get; }
 
-        public PatternEditorViewModel()
+        public PatternEditorViewModel(ObservableCollection<Pattern> patterns)
         {
+            Letters = patterns;
+
             NewLetter();
             NewMatrixCommand = new RelayCommand(x => NewLetter());
             SaveToFannCommand = new RelayCommand(x => SaveToFann());

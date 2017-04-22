@@ -62,15 +62,37 @@
         </TabItem>
         <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkLearning}">
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
+
+                <Label Grid.Row="0" Grid.Column="0">Szybkość uczenia:</Label>
+                <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LearningRate}" />
+
+                <Label Grid.Row="1" Grid.Column="0">Maksymalna ilość iteracji:</Label>
+                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MaxIterations}" />
+
+                <Label Grid.Row="2" Grid.Column="0">Błąd:</Label>
+                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DesiredError}" />
+
+                <Label Grid.Row="3" Grid.Column="0">Iteracje pomiędzy raportami:</Label>
+                <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding IterationsBetweenReports}" />
+
+                <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                     <Button Command="{Binding StartLearningCommand}" Content="Start" Height="20" VerticalAlignment="Bottom" />
                     <Button Command="{Binding CancelLearningCommand}" Content="Anuluj" Height="20" VerticalAlignment="Bottom" />
                 </StackPanel>
-                <TextBox Grid.Row="1" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
+                
+                <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
             </Grid>
         </TabItem>
         <TabItem Header="Testowanie" DataContext="{Binding NetworkTesting}">

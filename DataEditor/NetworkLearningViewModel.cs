@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,13 +19,23 @@ namespace DataEditor
 
         public ICommand CancelLearningCommand { get; }
 
+        public float LearningRate { get; set; } = 0.7f;
+
+        public float DesiredError { get; set; } = 0.01f;
+
+        public uint MaxIterations { get; set; } = 300000;
+
+        public uint IterationsBetweenReports { get; set; } = 1000;
+
         private CancellationTokenSource _cancellationTokenSource;
 
         private readonly NeuralNet _network;
+        private readonly ObservableCollection<Pattern> _patterns;
 
-        public NetworkLearningViewModel(NeuralNet network)
+        public NetworkLearningViewModel(NeuralNet network, ObservableCollection<Pattern> patterns)
         {
             _network = network;
+            _patterns = patterns;
 
             StartLearningCommand = new AsyncRelayCommand(x => StartLearning());
             CancelLearningCommand = new RelayCommand(x => CancelLearning());
@@ -36,10 +47,6 @@ namespace DataEditor
 
             await Task.Run(() =>
             {
-                const float desiredError = 0.01f;
-                const uint maxIterations = 300000;
-                const uint iterationsBetweenReports = 1000;
-
                 const string filePath = @"letters.txt";
 
                 if (!File.Exists(filePath))
@@ -48,18 +55,20 @@ namespace DataEditor
                     return;
                 }
 
-                    using (TrainingData data = new TrainingData(filePath))
+                _network.LearningRate = LearningRate;
+
+                using (TrainingData data = new TrainingData(filePath))
                 {
                     _network.InitWeights(data);
 
-                    AddLine($"Max Epochs {maxIterations,8:D}. Desired Error: {desiredError,-8:F}");
+                    AddLine($"Max Epochs {MaxIterations,8:D}. Desired Error: {DesiredError,-8:F}");
                     _network.SetCallback((nett, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
                     {
                         AddLine($"Epochs     {epochs,8:D}. Current Error: {nett.MSE,-8:F}");
                         return 0;
                     }, null);
 
-                    _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
+                    _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
 
                     AddLine("\nTesting network.");
                     for (uint i = 0; i < data.TrainDataLength; i++)

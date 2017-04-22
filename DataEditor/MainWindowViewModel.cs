@@ -1,4 +1,5 @@
-﻿using FANNCSharp;
+﻿using System.Collections.ObjectModel;
+using FANNCSharp;
 using FANNCSharp.Double;
 using PropertyChanged;
 
@@ -15,7 +16,6 @@ namespace DataEditor
         {
             _network = new NeuralNet(NetworkType.LAYER, NumLayers, NumInput, NumHidden, NumOutput)
             {
-                LearningRate = 0.7f,
                 ActivationSteepnessHidden = 1.0f,
                 ActivationSteepnessOutput = 1.0f,
 
@@ -23,8 +23,8 @@ namespace DataEditor
                 ActivationFunctionOutput = ActivationFunction.SIGMOID,
             };
 
-            PatternEditor = new PatternEditorViewModel();
-            NetworkLearning = new NetworkLearningViewModel(_network);
+            PatternEditor = new PatternEditorViewModel(_patterns);
+            NetworkLearning = new NetworkLearningViewModel(_network, _patterns);
             NetworkTesting = new NetworkTestingViewModel(_network);
         }
 
@@ -34,5 +34,6 @@ namespace DataEditor
         private const uint NumOutput = 35;
 
         private readonly NeuralNet _network;
+        private readonly ObservableCollection<Pattern> _patterns = new ObservableCollection<Pattern>();
     }
 }
