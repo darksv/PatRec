@@ -6,55 +6,74 @@
         xmlns:local="clr-namespace:DataEditor"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="Generator" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Border Grid.Row="0" Padding="10">
+        Title="Rozpoznawanie wzorców" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
+    <TabControl>
+        <TabItem Header="Edytor wzorców">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Nazwa:</TextBlock>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentLetter.Name, UpdateSourceTrigger=PropertyChanged}" Margin="5,2.5" VerticalContentAlignment="Center"/>
-
-                <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Wymiary:</TextBlock>
-                <Border Grid.Row="1" Grid.Column="1" Margin="5,2.5">
+                <Border Grid.Row="0" Padding="10">
                     <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <xctk:IntegerUpDown Grid.Column="0" Value="{Binding CurrentLetter.Rows}" Minimum="1"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5,0">✖</TextBlock>
-                        <xctk:IntegerUpDown Grid.Column="2" Value="{Binding CurrentLetter.Columns}" Minimum="1" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Nazwa:</TextBlock>
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding CurrentLetter.Name, UpdateSourceTrigger=PropertyChanged}" Margin="5,2.5" VerticalContentAlignment="Center"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Wymiary:</TextBlock>
+                        <Border Grid.Row="1" Grid.Column="1" Margin="5,2.5">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <xctk:IntegerUpDown Grid.Column="0" Value="{Binding CurrentLetter.Rows}" Minimum="1"/>
+                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5,0">✖</TextBlock>
+                                <xctk:IntegerUpDown Grid.Column="2" Value="{Binding CurrentLetter.Columns}" Minimum="1" />
+                            </Grid>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Wybrana matryca:</TextBlock>
+                        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Letters}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentLetter}" Margin="5,2.5" VerticalContentAlignment="Center"/>
+
+                        <StackPanel Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Margin="5,0,0,0">
+                            <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Nowa matryca" Command="{Binding NewMatrixCommand}" />
+                            <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Zapisz do pliku FANN" Command="{Binding SaveToFannCommand}" IsEnabled="{Binding Letters.Count}" />
+                            <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Zapisz do XML" Command="{Binding SaveToXmlCommand}" />
+                        </StackPanel>
                     </Grid>
                 </Border>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Wybrana matryca:</TextBlock>
-                <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Letters}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentLetter}" Margin="5,2.5" VerticalContentAlignment="Center"/>
-
-                <StackPanel Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Margin="5,0,0,0">
-                    <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Nowa matryca" Command="{Binding NewMatrixCommand}" />
-                    <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Zapisz do pliku FANN" Command="{Binding SaveToFannCommand}" IsEnabled="{Binding Letters.Count}" />
-                    <Button Margin="2.5" Padding="5,2.5" VerticalAlignment="Center" Content="Zapisz do XML" Command="{Binding SaveToXmlCommand}" />
-                </StackPanel>
+                <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
             </Grid>
-        </Border>
-        
-        <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
-    </Grid>
+        </TabItem>
+        <TabItem Header="Uczenie sieci">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button Command="{Binding TestCommand}" Content="Test" />
+                </StackPanel>
+                <TextBox Grid.Row="1" IsReadOnly="True" />
+            </Grid>
+        </TabItem>
+        <TabItem Header="Testowanie">
+            <local:PixelDrawer Pattern="{Binding CurrentLetter}" />
+        </TabItem>
+    </TabControl>
 </Window>
