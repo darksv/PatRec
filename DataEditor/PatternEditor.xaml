@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="DataEditor.PixelDrawer"
+<UserControl x:Class="DataEditor.PixelDrawer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="140" d:DesignWidth="100">
     <ItemsControl x:Name="LayoutRoot" 
-                  ItemsSource="{Binding Letter.Pixels}"
+                  ItemsSource="{Binding Pattern.Pixels}"
                   d:DataContext="{d:DesignInstance {x:Type local:PixelDrawer}}">
         <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
@@ -15,10 +15,10 @@
                              MouseDown="MouseHandler"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
-                             Columns="{Binding Letter.Columns}"
-                             Rows="{Binding Letter.Rows}"
-                             Width="{Binding Letter.Width}"
-                             Height="{Binding Letter.Height}"
+                             Columns="{Binding Pattern.Columns}"
+                             Rows="{Binding Pattern.Rows}"
+                             Width="{Binding Pattern.Width}"
+                             Height="{Binding Pattern.Height}"
                              IsItemsHost="True" />
             </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>

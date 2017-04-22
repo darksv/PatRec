@@ -13,9 +13,9 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class MainWindowViewModel
     {
-        public ObservableCollection<Letter> Letters { get; } = new ObservableCollection<Letter>();
+        public ObservableCollection<Pattern> Letters { get; } = new ObservableCollection<Pattern>();
 
-        public Letter CurrentLetter { get; set; }
+        public Pattern CurrentLetter { get; set; }
 
         public ICommand NewMatrixCommand { get; }
 
@@ -33,10 +33,10 @@ namespace DataEditor
 
         private void NewLetter()
         {
-            Letter letter;
+            Pattern letter;
             if (Letters.Any())
             {
-                letter = new Letter
+                letter = new Pattern
                 {
                     Rows = Letters.Last().Rows,
                     Columns = Letters.Last().Columns
@@ -44,7 +44,7 @@ namespace DataEditor
             }
             else
             {
-                letter = new Letter();
+                letter = new Pattern();
             }
 
             letter.Name = $"#{Letters.Count}";

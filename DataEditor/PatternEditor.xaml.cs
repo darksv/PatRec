@@ -7,16 +7,16 @@ namespace DataEditor
 {
     public partial class PixelDrawer : UserControl
     {
-        public static readonly DependencyProperty LetterProperty = DependencyProperty.Register(
-            "Letter",
-            typeof(Letter),
+        public static readonly DependencyProperty PatternProperty = DependencyProperty.Register(
+            "Pattern",
+            typeof(Pattern),
             typeof(PixelDrawer),
             new PropertyMetadata());
 
-        public Letter Letter
+        public Pattern Pattern
         {
-            get { return (Letter) GetValue(LetterProperty); }
-            set { SetValue(LetterProperty, value); }
+            get { return (Pattern) GetValue(PatternProperty); }
+            set { SetValue(PatternProperty, value); }
         }
 
         public static readonly DependencyProperty IsReadonlyProperty = DependencyProperty.Register(
@@ -40,13 +40,13 @@ namespace DataEditor
         
         private Pixel GetPixelByPosition(FrameworkElement container, Point position)
         {
-            var dx = (container.ActualWidth + 1) / Letter.Columns;
-            var dy = (container.ActualHeight + 1) / Letter.Rows;
+            var dx = (container.ActualWidth + 1) / Pattern.Columns;
+            var dy = (container.ActualHeight + 1) / Pattern.Rows;
 
             var row = (int) Math.Floor(position.Y / dy);
             var column = (int) Math.Floor(position.X / dx);
 
-            return Letter[row, column];
+            return Pattern[row, column];
         }
 
         private void MouseHandler(object sender, MouseEventArgs e)

@@ -5,9 +5,9 @@ using PropertyChanged;
 namespace DataEditor
 {
     [ImplementPropertyChanged]
-    public class Letter
+    public class Pattern
     {
-        public Letter()
+        public Pattern()
         {
             Clear();
         }

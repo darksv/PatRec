@@ -91,17 +91,17 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PixelDrawer.xaml">
+    <Page Include="PatternEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Letter.cs" />
+    <Compile Include="Pattern.cs" />
     <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Pixel.cs" />
-    <Compile Include="PixelDrawer.xaml.cs">
-      <DependentUpon>PixelDrawer.xaml</DependentUpon>
+    <Compile Include="PatternEditor.xaml.cs">
+      <DependentUpon>PatternEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

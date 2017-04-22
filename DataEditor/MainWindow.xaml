@@ -55,6 +55,6 @@
             </Grid>
         </Border>
         
-        <local:PixelDrawer Grid.Row="1" Letter="{Binding CurrentLetter}" />
+        <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
     </Grid>
 </Window>
