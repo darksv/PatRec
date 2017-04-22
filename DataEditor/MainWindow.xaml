@@ -73,6 +73,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Label Grid.Row="0" Grid.Column="0">Szybkość uczenia:</Label>
@@ -91,8 +92,14 @@
                     <Button Command="{Binding StartLearningCommand}" Content="Start" Height="20" VerticalAlignment="Bottom" />
                     <Button Command="{Binding CancelLearningCommand}" Content="Anuluj" Height="20" VerticalAlignment="Bottom" />
                 </StackPanel>
-                
-                <TextBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
+
+                <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Epochs}" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Epoka" Binding="{Binding Number}" Width="*"/>
+                        <DataGridTextColumn Header="Błąd" Binding="{Binding Error}"  Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
             </Grid>
         </TabItem>
         <TabItem Header="Testowanie" DataContext="{Binding NetworkTesting}">

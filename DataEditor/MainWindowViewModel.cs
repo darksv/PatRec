@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Threading;
 using FANNCSharp;
 using FANNCSharp.Double;
 using PropertyChanged;
@@ -24,7 +25,7 @@ namespace DataEditor
             };
 
             PatternEditor = new PatternEditorViewModel(_patterns);
-            NetworkLearning = new NetworkLearningViewModel(_network, _patterns);
+            NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network);
         }
 

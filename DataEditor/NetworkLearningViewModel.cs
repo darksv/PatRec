@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 using FANNCSharp.Double;
 using PropertyChanged;
+using Xceed.Wpf.Toolkit;
 
 namespace DataEditor
 {
@@ -29,16 +32,27 @@ namespace DataEditor
 
         private CancellationTokenSource _cancellationTokenSource;
 
+        private readonly Dispatcher _dispatcher;
         private readonly NeuralNet _network;
         private readonly ObservableCollection<Pattern> _patterns;
 
-        public NetworkLearningViewModel(NeuralNet network, ObservableCollection<Pattern> patterns)
+        public NetworkLearningViewModel(NeuralNet network, ObservableCollection<Pattern> patterns, Dispatcher currentDispatcher)
         {
             _network = network;
             _patterns = patterns;
+            _dispatcher = currentDispatcher;
 
             StartLearningCommand = new AsyncRelayCommand(x => StartLearning());
             CancelLearningCommand = new RelayCommand(x => CancelLearning());
+        }
+
+        public ObservableCollection<EpochInfo> Epochs { get; } = new ObservableCollection<EpochInfo>();
+
+        public class EpochInfo
+        {
+            public uint Number { get; set; }
+
+            public float Error { get; set; }
         }
 
         private async Task StartLearning()
@@ -57,14 +71,17 @@ namespace DataEditor
 
                 _network.LearningRate = LearningRate;
 
+                _dispatcher.Invoke(() => Epochs.Clear());
                 using (TrainingData data = new TrainingData(filePath))
                 {
                     _network.InitWeights(data);
-
-                    AddLine($"Max Epochs {MaxIterations,8:D}. Desired Error: {DesiredError,-8:F}");
                     _network.SetCallback((nett, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
                     {
-                        AddLine($"Epochs     {epochs,8:D}. Current Error: {nett.MSE,-8:F}");
+                        _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
+                        {
+                            Number = epochs,
+                            Error = nett.MSE,
+                        }));
                         return 0;
                     }, null);
 
