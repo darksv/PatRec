@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Rozpoznawanie wzorców" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
     <TabControl>
-        <TabItem Header="Edytor wzorców">
+        <TabItem Header="Edytor wzorców" DataContext="{Binding PatternEditor}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -60,16 +60,17 @@
                 <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
             </Grid>
         </TabItem>
-        <TabItem Header="Uczenie sieci">
+        <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkLearning}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Command="{Binding TestCommand}" Content="Test" />
+                    <Button Command="{Binding StartLearningCommand}" Content="Start" Height="20" VerticalAlignment="Bottom" />
+                    <Button Command="{Binding CancelLearningCommand}" Content="Anuluj" Height="20" VerticalAlignment="Bottom" />
                 </StackPanel>
-                <TextBox Grid.Row="1" IsReadOnly="True" />
+                <TextBox Grid.Row="1" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
             </Grid>
         </TabItem>
         <TabItem Header="Testowanie">
