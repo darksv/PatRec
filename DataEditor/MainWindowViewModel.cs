@@ -29,9 +29,9 @@ namespace DataEditor
         }
 
         private const uint NumLayers = 3;
-        private const uint NumInput = 35;
-        private const uint NumHidden = 25;
-        private const uint NumOutput = 10;
+        private const uint NumInput = 55;
+        private const uint NumHidden = 40;
+        private const uint NumOutput = 35;
 
         private readonly NeuralNet _network;
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,10 +40,15 @@ namespace DataEditor
                 const uint maxIterations = 300000;
                 const uint iterationsBetweenReports = 1000;
 
-                const string filePath =
-                    @"C:\Users\Host\Documents\visual studio 2017\Projects\Recogniser\Trainer\digits.txt";
+                const string filePath = @"letters.txt";
 
-                using (TrainingData data = new TrainingData(filePath))
+                if (!File.Exists(filePath))
+                {
+                    AddLine("Brak pliku " + filePath);
+                    return;
+                }
+
+                    using (TrainingData data = new TrainingData(filePath))
                 {
                     _network.InitWeights(data);
 

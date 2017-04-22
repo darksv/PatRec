@@ -16,7 +16,7 @@ namespace DataEditor
             PredictCommand = new RelayCommand(x => Predict());
         }
 
-        public Pattern Pattern { get; } = new Pattern();
+        public Pattern Pattern { get; } = new Pattern {Rows = 11, Columns = 5};
 
         public double[] Prediction { get; private set; }
 
