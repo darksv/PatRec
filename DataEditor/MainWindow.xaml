@@ -93,7 +93,8 @@
                     <Button Command="{Binding CancelLearningCommand}" Content="Anuluj" Height="20" VerticalAlignment="Bottom" />
                 </StackPanel>
 
-                <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Epochs}" AutoGenerateColumns="False">
+                <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Epochs}" AutoGenerateColumns="False" IsReadOnly="True" 
+                          CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserDeleteRows="False" CanUserAddRows="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Epoka" Binding="{Binding Number}" Width="*"/>
                         <DataGridTextColumn Header="Błąd" Binding="{Binding Error}"  Width="*"/>

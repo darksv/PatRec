@@ -26,9 +26,9 @@ namespace DataEditor
 
         public float DesiredError { get; set; } = 0.01f;
 
-        public uint MaxIterations { get; set; } = 300000;
+        public uint MaxIterations { get; set; } = 1000;
 
-        public uint IterationsBetweenReports { get; set; } = 1000;
+        public uint IterationsBetweenReports { get; set; } = 1;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -86,8 +86,7 @@ namespace DataEditor
                     }, null);
 
                     _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
-
-                    AddLine("\nTesting network.");
+                    
                     for (uint i = 0; i < data.TrainDataLength; i++)
                     {
                         var input = data.InputAccessor[(int) i];
