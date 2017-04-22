@@ -73,8 +73,26 @@
                 <TextBox Grid.Row="1" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
             </Grid>
         </TabItem>
-        <TabItem Header="Testowanie">
-            <local:PixelDrawer Pattern="{Binding CurrentLetter}" />
+        <TabItem Header="Testowanie" DataContext="{Binding NetworkTesting}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <local:PixelDrawer Grid.Row="0" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Prediction}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding StringFormat={}{0:0.0000}}" Margin="5"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
         </TabItem>
     </TabControl>
 </Window>

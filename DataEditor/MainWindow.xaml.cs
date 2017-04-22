@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using PropertyChanged;
 
 namespace DataEditor
@@ -6,11 +7,18 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public partial class MainWindow : Window
     {
+        private readonly MainWindowViewModel _viewModel = new MainWindowViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            DataContext = new MainWindowViewModel();
+            DataContext = _viewModel;
+        }
+
+        private void PixelDrawer_OnPatternChanged(object sender, EventArgs e)
+        {
+            _viewModel.NetworkTesting.Predict();
         }
     }
 }

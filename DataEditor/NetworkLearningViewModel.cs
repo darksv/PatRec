@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using FANNCSharp;
 using FANNCSharp.Double;
 using PropertyChanged;
 
@@ -20,8 +19,12 @@ namespace DataEditor
 
         private CancellationTokenSource _cancellationTokenSource;
 
-        public NetworkLearningViewModel()
+        private readonly NeuralNet _network;
+
+        public NetworkLearningViewModel(NeuralNet network)
         {
+            _network = network;
+
             StartLearningCommand = new AsyncRelayCommand(x => StartLearning());
             CancelLearningCommand = new RelayCommand(x => CancelLearning());
         }
@@ -32,48 +35,36 @@ namespace DataEditor
 
             await Task.Run(() =>
             {
-                const float learningRate = 0.01f;
-                const uint numLayers = 3;
-                const uint numInput = 35;
-                const uint numHidden = 100;
-                const uint numOutput = 10;
-                const float desiredError = 0.00001f;
+                const float desiredError = 0.01f;
                 const uint maxIterations = 300000;
                 const uint iterationsBetweenReports = 1000;
 
-                using (var net = new NeuralNet(NetworkType.LAYER, numLayers, numInput, numHidden, numOutput))
+                const string filePath =
+                    @"C:\Users\Host\Documents\visual studio 2017\Projects\Recogniser\Trainer\digits.txt";
+
+                using (TrainingData data = new TrainingData(filePath))
                 {
-                    net.LearningRate = learningRate;
+                    _network.InitWeights(data);
 
-                    net.ActivationSteepnessHidden = 0.25f;
-                    net.ActivationSteepnessOutput = 0.15f;
-
-                    net.ActivationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
-                    net.ActivationFunctionOutput = ActivationFunction.SIGMOID;
-
-                    using (TrainingData data = new TrainingData(@"C:\Users\Host\Documents\visual studio 2017\Projects\Recogniser\Trainer\digits.txt"))
+                    AddLine($"Max Epochs {maxIterations,8:D}. Desired Error: {desiredError,-8:F}");
+                    _network.SetCallback((nett, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
                     {
-                        net.InitWeights(data);
+                        AddLine($"Epochs     {epochs,8:D}. Current Error: {nett.MSE,-8:F}");
+                        return 0;
+                    }, null);
 
-                        AddLine($"Max Epochs {maxIterations,8:D}. Desired Error: {desiredError,-8:F}");
-                        net.SetCallback((nett, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
-                        {
-                            AddLine($"Epochs     {epochs,8:D}. Current Error: {nett.MSE,-8:F}");
-                            return 0;
-                        }, null);
+                    _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
 
-                        net.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
+                    AddLine("\nTesting network.");
+                    for (uint i = 0; i < data.TrainDataLength; i++)
+                    {
+                        var input = data.InputAccessor[(int) i];
+                        var desiredOutput = data.OutputAccessor[(int) i];
+                        var calculatedOutput = _network.Run(input);
+                        var difference = Enumerable.Zip(calculatedOutput, desiredOutput.Array, (xc, xd) => xc - xd);
 
-                        AddLine("\nTesting network.");
-                        for (uint i = 0; i < data.TrainDataLength; i++)
-                        {
-                            var input = data.InputAccessor[(int)i];
-                            var desiredOutput = data.OutputAccessor[(int)i];
-                            var calculatedOutput = net.Run(input);
-                            var difference = Enumerable.Zip(calculatedOutput, desiredOutput.Array, (xc, xd) => xc - xd);
-
-                            AddLine($"({FormatArray(input.Array)}) -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput.Array)}), differences = ({FormatArray(difference)})");
-                        }
+                        AddLine(
+                            $"({FormatArray(input.Array)}) -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput.Array)}), differences = ({FormatArray(difference)})");
                     }
                 }
 

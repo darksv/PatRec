@@ -31,6 +31,8 @@ namespace DataEditor
             set { SetValue(IsReadonlyProperty, value); }
         }
 
+        public event EventHandler PatternChanged;
+
         public PixelDrawer()
         {
             InitializeComponent();
@@ -62,10 +64,12 @@ namespace DataEditor
             if (e.RightButton.HasFlag(MouseButtonState.Pressed))
             {
                 pixel.IsSelected = false;
+                PatternChanged?.Invoke(this, EventArgs.Empty);
             }
             else if (e.LeftButton.HasFlag(MouseButtonState.Pressed))
             {
                 pixel.IsSelected = true;
+                PatternChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
