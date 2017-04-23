@@ -16,17 +16,21 @@ namespace DataEditor
     {
         public string Log { get; set; } = string.Empty;
 
-        public ICommand StartLearningCommand { get; }
+        public ICommand StartTrainingCommand { get; }
 
-        public ICommand CancelLearningCommand { get; }
+        public ICommand CancelTrainingCommand { get; }
+
+        public bool CanStartTraining { get; private set; } = true;
+
+        public bool CanCancelTraining { get; private set; } = false;
 
         public float LearningRate { get; set; } = 0.7f;
 
-        public float DesiredError { get; set; } = 0.01f;
+        public float DesiredError { get; set; } = 0.005f;
 
         public uint MaxIterations { get; set; } = 1000;
 
-        public uint IterationsBetweenReports { get; set; } = 1;
+        public uint IterationsBetweenReports { get; set; } = 10;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -40,8 +44,8 @@ namespace DataEditor
             _patterns = patterns;
             _dispatcher = currentDispatcher;
 
-            StartLearningCommand = new AsyncRelayCommand(x => StartLearning());
-            CancelLearningCommand = new RelayCommand(x => CancelLearning());
+            StartTrainingCommand = new AsyncRelayCommand(x => StartTraining());
+            CancelTrainingCommand = new RelayCommand(x => CancelTraining());
         }
 
         public ObservableCollection<EpochInfo> Epochs { get; } = new ObservableCollection<EpochInfo>();
@@ -53,62 +57,31 @@ namespace DataEditor
             public float Error { get; set; }
         }
 
-        private async Task StartLearning()
+        private async Task StartTraining()
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            await Task.Run(() =>
+            CanStartTraining = false;
+            CanCancelTraining = true;
+
+            var token = _cancellationTokenSource.Token;
+
+            try
             {
-                string filePath = $@"{DateTime.Now:yyyyMMddhhmmss}.txt";
-                _patterns.SaveToFann(filePath);
-                _network.LearningRate = LearningRate;
-
-                using (TrainingData data = new TrainingData(filePath))
-                {
-                    data.ShuffleTrainData();
-
-                    _dispatcher.Invoke(() => Epochs.Clear());
-
-                    _network.InitWeights(data);
-                    _network.SetCallback((net, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
-                    {
-                        _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
-                        {
-                            Number = epochs,
-                            Error = net.MSE,
-                        }));
-                        return 0;
-                    }, null);
-
-                    _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
-
-                    int i = 0;
-                    foreach (var pattern in _patterns)
-                    {
-                        var input = pattern.ToVector();
-                        var desiredOutput = new double[_patterns.Count()];
-                        desiredOutput[i] = 1.0;
-                        
-                        var calculatedOutput = _network.Run(input);
-                        var difference = Enumerable.Zip(calculatedOutput, desiredOutput, (xc, xd) => xc - xd);
-
-                        AddLine($"{pattern.Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})");
-
-                        i++;
-                    }
-                }
-
-            }, _cancellationTokenSource.Token);
-        }
-
-        private void AddLine(string line)
-        {
-            Log += line + "\n";
+                await Task.Run(() => ExecuteTraining(token), token);
+            }
+            catch (Exception e)
+            {
+                
+            }
+           
+            CanStartTraining = true;
+            CanCancelTraining = false;
         }
 
         private static string Format(double x)
         {
-            return FannAbs(x) < float.Epsilon
+            return Math.Abs(x) < float.Epsilon
                 ? 0.ToString()
                 : x.ToString("0.0000");
         }
@@ -118,12 +91,52 @@ namespace DataEditor
             return string.Join(", ", arr.Select(Format));
         }
 
-        static double FannAbs(double value)
+        private void ExecuteTraining(CancellationToken token)
         {
-            return value > 0 ? value : -value;
+            string filePath = $@"{DateTime.Now:yyyyMMddhhmmss}.txt";
+            _patterns.SaveToFann(filePath);
+            _network.LearningRate = LearningRate;
+
+            using (TrainingData data = new TrainingData(filePath))
+            {
+                data.ShuffleTrainData();
+
+                _dispatcher.Invoke(() => Epochs.Clear());
+
+                _network.InitWeights(data);
+                _network.SetCallback((net, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
+                {
+                    _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
+                    {
+                        Number = epochs,
+                        Error = net.MSE,
+                    }));
+
+                    token.ThrowIfCancellationRequested();
+
+                    return 0;
+                }, null);
+
+                _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
+
+                int i = 0;
+                foreach (var pattern in _patterns)
+                {
+                    var input = pattern.ToVector();
+                    var desiredOutput = new double[_patterns.Count()];
+                    desiredOutput[i] = 1.0;
+
+                    var calculatedOutput = _network.Run(input);
+                    var difference = Enumerable.Zip(calculatedOutput, desiredOutput, (xc, xd) => xc - xd);
+
+                    Log += $"{pattern.Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
+
+                    i++;
+                }
+            }
         }
 
-        private void CancelLearning()
+        private void CancelTraining()
         {
             _cancellationTokenSource?.Cancel();
         }
