@@ -22,6 +22,8 @@ namespace DataEditor
 
         public ICommand SaveToXmlCommand { get; }
 
+        public ICommand LoadFromXmlCommand { get; }
+
         public PatternEditorViewModel(ObservableCollection<Pattern> patterns)
         {
             Letters = patterns;
@@ -30,6 +32,7 @@ namespace DataEditor
             NewMatrixCommand = new RelayCommand(x => NewLetter());
             SaveToFannCommand = new RelayCommand(x => SaveToFann());
             SaveToXmlCommand = new RelayCommand(x => SaveToXml());
+            LoadFromXmlCommand = new RelayCommand(x => LoadFromXml());
         }
 
         private void NewLetter()
@@ -123,6 +126,42 @@ namespace DataEditor
 
             var doc = new XDocument(root);
             doc.Save(dialog.FileName);
+        }
+
+        private void LoadFromXml()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "Plik XML|*.xml",
+                DefaultExt = "xml",
+                AddExtension = true
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            Letters.Clear();
+
+            var doc = XDocument.Load(dialog.FileName);
+            foreach (var element in doc.Descendants("Matrix"))
+            {
+                var name = (string) element.Attribute("Name");
+                var rows = (int) element.Attribute("Rows");
+                var columns = (int) element.Attribute("Columns");
+                var pixels = element.Value.Split(',').Select(x => x == "1").ToArray();
+
+                var pattern = new Pattern
+                {
+                    Columns = columns,
+                    Rows = rows,
+                    Name = name
+                };
+                pattern.FillUsing(pixels);
+                Letters.Add(pattern);
+            }
+
+            CurrentLetter = Letters.FirstOrDefault();
         }
     }
 }

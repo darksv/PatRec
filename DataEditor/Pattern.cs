@@ -47,7 +47,20 @@ namespace DataEditor
         public Pixel[] Pixels { get; private set; }
         
         public Pixel this[int row, int column] => _pixels[row, column];
-        
+
+        public void FillUsing(bool[] pixels)
+        {
+            if (pixels.Length != Pixels.Length)
+            {
+                throw new ArgumentException(@"pixel count mismatch", nameof(pixels));
+            }
+
+            for (int i = 0; i < pixels.Length; ++i)
+            {
+                _pixels[i / Columns, i % Columns].IsSelected = pixels[i];
+            }
+        }
+
         private void UpdateSize()
         {
             var oldRows = _pixels.GetLength(0);
