@@ -24,8 +24,7 @@ namespace DataEditor
         public PatternEditorViewModel(PatternCollection patterns)
         {
             Patterns = patterns;
-
-            NewPattern();
+            
             NewPatternCommand = new RelayCommand(x => NewPattern());
             SaveToFannCommand = new RelayCommand(x => SaveToFann());
             SaveToXmlCommand = new RelayCommand(x => SaveToXml());
