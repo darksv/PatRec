@@ -15,24 +15,23 @@ namespace DataEditor
 
         public MainWindowViewModel()
         {
-            _network = new NeuralNet(NetworkType.LAYER, NumLayers, NumInput, NumHidden, NumOutput)
+            _network = new NeuralNet(NetworkType.LAYER, (uint) Layers.Length, Layers)
             {
-                ActivationSteepnessHidden = 1.0f,
+                ActivationSteepnessHidden = 0.75f,
                 ActivationSteepnessOutput = 1.0f,
 
                 ActivationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC,
                 ActivationFunctionOutput = ActivationFunction.SIGMOID,
+
+                TrainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL
             };
 
             PatternEditor = new PatternEditorViewModel(_patterns);
             NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network);
         }
-
-        private const uint NumLayers = 3;
-        private const uint NumInput = 55;
-        private const uint NumHidden = 40;
-        private const uint NumOutput = 35;
+        
+        private readonly uint[] Layers = { 55, 25, 35 };
 
         private readonly NeuralNet _network;
         private readonly ObservableCollection<Pattern> _patterns = new ObservableCollection<Pattern>();

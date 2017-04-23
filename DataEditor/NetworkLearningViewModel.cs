@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -9,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using FANNCSharp.Double;
 using PropertyChanged;
-using Xceed.Wpf.Toolkit;
 
 namespace DataEditor
 {
@@ -71,16 +69,19 @@ namespace DataEditor
 
                 _network.LearningRate = LearningRate;
 
-                _dispatcher.Invoke(() => Epochs.Clear());
                 using (TrainingData data = new TrainingData(filePath))
                 {
+                    data.ShuffleTrainData();
+
+                    _dispatcher.Invoke(() => Epochs.Clear());
+
                     _network.InitWeights(data);
-                    _network.SetCallback((nett, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
+                    _network.SetCallback((net, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
                     {
                         _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
                         {
                             Number = epochs,
-                            Error = nett.MSE,
+                            Error = net.MSE,
                         }));
                         return 0;
                     }, null);
