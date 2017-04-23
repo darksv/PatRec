@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DataEditor"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        xmlns:visualisation="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
         Title="Rozpoznawanie wzorców" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
     <TabControl>
@@ -111,13 +113,38 @@
                     <Button Grid.Column="1" Command="{Binding CancelTrainingCommand}" Content="Przerwij" IsEnabled="{Binding CanCancelTraining}" />
                 </Grid>
 
-                <DataGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Epochs}" AutoGenerateColumns="False" IsReadOnly="True" 
-                          CanUserSortColumns="False" CanUserReorderColumns="False" CanUserResizeRows="False" CanUserResizeColumns="False" CanUserDeleteRows="False" CanUserAddRows="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Epoka" Binding="{Binding Number}" Width="*"/>
-                        <DataGridTextColumn Header="Błąd" Binding="{Binding Error}"  Width="*"/>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <charting:Chart Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0">
+                    <charting:Chart.Axes>
+                        <charting:LinearAxis Orientation="X" Title="Iteracje" />
+                        <charting:LinearAxis Orientation="Y" Title="Błąd" />
+                    </charting:Chart.Axes>
+                    <charting:Chart.LegendStyle>
+                        <Style TargetType="visualisation:Legend">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Height" Value="0" />
+                            <Setter Property="Width" Value="0" />
+                        </Style>
+                    </charting:Chart.LegendStyle>
+                    <charting:Chart.PlotAreaStyle>
+                        <Style TargetType="Grid">
+                            <Setter Property="Background" Value="Transparent" />
+                        </Style>
+                    </charting:Chart.PlotAreaStyle>
+                    <charting:Chart.TitleStyle>
+                        <Style TargetType="visualisation:Title">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </charting:Chart.TitleStyle>
+                    <charting:LineSeries DependentValuePath="Error" IndependentValuePath="Number" ItemsSource="{Binding Epochs}" IsSelectionEnabled="False" BorderBrush="Black">
+                        <charting:LineSeries.DataPointStyle>
+                            <Style TargetType="charting:LineDataPoint">
+                                <Setter Property="Template" Value="{x:Null}" />
+                                <Setter Property="Background" Value="Gray" />
+                            </Style>
+                        </charting:LineSeries.DataPointStyle>
+                    </charting:LineSeries>
+                </charting:Chart>
+                
                 <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" /> 
             </Grid>
         </TabItem>
@@ -169,3 +196,34 @@
         </TabItem>
     </TabControl>
 </Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
