@@ -128,7 +128,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PixelDrawer Grid.Column="0" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
+                <local:PixelDrawer Grid.Column="0" Grid.ColumnSpan="2" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
                     <StackPanel.Resources>
