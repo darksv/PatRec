@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Rozpoznawanie wzorców" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
     <TabControl>
-        <TabItem Header="Edytor wzorców" DataContext="{Binding PatternEditor}">
+        <TabItem Header="Edycja znaków" DataContext="{Binding PatternEditor}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -111,25 +111,50 @@
                 <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" /> 
             </Grid>
         </TabItem>
-        <TabItem Header="Testowanie" DataContext="{Binding NetworkTesting}">
+        
+        <TabItem Header="Rozpoznawanie" DataContext="{Binding NetworkTesting}">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <local:PixelDrawer Grid.Row="0" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding Prediction}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding StringFormat={}{0:0.0000}}" Margin="5"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <local:PixelDrawer Grid.Column="0" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                    <StackPanel.Resources>
+                        <Style x:Key="ValueStyle" TargetType="TextBlock" d:DataContext="{d:DesignInstance local:NetworkTestingViewModel+Prediction}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsHighest}" Value="False">
+                                    <Setter Property="Foreground" Value="LightGray" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Resources>
+                    <ItemsControl ItemsSource="{Binding Predictions}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding Predictions}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Value, StringFormat={}{0:0.00000}}" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </Grid>
         </TabItem>
     </TabControl>

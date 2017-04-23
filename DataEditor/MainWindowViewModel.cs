@@ -27,7 +27,7 @@ namespace DataEditor
 
             PatternEditor = new PatternEditorViewModel(_patterns);
             NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
-            NetworkTesting = new NetworkTestingViewModel(_network);
+            NetworkTesting = new NetworkTestingViewModel(_network, _patterns);
         }
         
         private readonly uint[] Layers = { 55, 25, 35 };
