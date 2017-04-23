@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,9 +32,9 @@ namespace DataEditor
 
         private readonly Dispatcher _dispatcher;
         private readonly NeuralNet _network;
-        private readonly ObservableCollection<Pattern> _patterns;
+        private readonly PatternCollection _patterns;
 
-        public NetworkLearningViewModel(NeuralNet network, ObservableCollection<Pattern> patterns, Dispatcher currentDispatcher)
+        public NetworkLearningViewModel(NeuralNet network, PatternCollection patterns, Dispatcher currentDispatcher)
         {
             _network = network;
             _patterns = patterns;
@@ -59,14 +59,8 @@ namespace DataEditor
 
             await Task.Run(() =>
             {
-                const string filePath = @"letters.txt";
-
-                if (!File.Exists(filePath))
-                {
-                    AddLine("Brak pliku " + filePath);
-                    return;
-                }
-
+                string filePath = $@"{DateTime.Now:yyyyMMddhhmmss}.txt";
+                _patterns.SaveToFann(filePath);
                 _network.LearningRate = LearningRate;
 
                 using (TrainingData data = new TrainingData(filePath))

@@ -1,9 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml.Linq;
 using Microsoft.Win32;
 using PropertyChanged;
 
@@ -12,11 +9,11 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class PatternEditorViewModel
     {
-        public ObservableCollection<Pattern> Letters { get; }
+        public PatternCollection Patterns { get; }
 
         public Pattern CurrentLetter { get; set; }
 
-        public ICommand NewMatrixCommand { get; }
+        public ICommand NewPatternCommand { get; }
 
         public ICommand SaveToFannCommand { get; }
 
@@ -24,43 +21,45 @@ namespace DataEditor
 
         public ICommand LoadFromXmlCommand { get; }
 
-        public PatternEditorViewModel(ObservableCollection<Pattern> patterns)
+        public PatternEditorViewModel(PatternCollection patterns)
         {
-            Letters = patterns;
+            Patterns = patterns;
 
-            NewLetter();
-            NewMatrixCommand = new RelayCommand(x => NewLetter());
+            NewPattern();
+            NewPatternCommand = new RelayCommand(x => NewPattern());
             SaveToFannCommand = new RelayCommand(x => SaveToFann());
             SaveToXmlCommand = new RelayCommand(x => SaveToXml());
             LoadFromXmlCommand = new RelayCommand(x => LoadFromXml());
         }
 
-        private void NewLetter()
+        private void NewPattern()
         {
-            Pattern letter;
-            if (Letters.Any())
+            Pattern pattern;
+            if (Patterns.Any())
             {
-                letter = new Pattern
+                var lastPattern = Patterns.Last();
+
+                pattern = new Pattern
                 {
-                    Rows = Letters.Last().Rows,
-                    Columns = Letters.Last().Columns
+                    Rows = lastPattern.Rows,
+                    Columns = lastPattern.Columns
                 };
             }
             else
             {
-                letter = new Pattern();
+                pattern = new Pattern();
             }
 
-            letter.Name = $"#{Letters.Count}";
+            pattern.Name = $"#{Patterns.Count()}";
 
-            Letters.Add(letter);
-            CurrentLetter = letter;
+            Patterns.Add(pattern);
+            CurrentLetter = pattern;
         }
 
         private void SaveToFann()
         {
-            var previous = Letters.First();
-            foreach (var letter in Letters.Skip(1))
+            var previous = Patterns.First();
+            foreach (var letter in Patterns.Skip(1))
             {
                 if (previous.Rows != letter.Rows || previous.Columns != letter.Columns)
                 {
@@ -82,22 +81,7 @@ namespace DataEditor
                 return;
             }
 
-            using (var f = new StreamWriter(dialog.FileName))
-            {
-                f.WriteLine($"{Letters.Count} {Letters[0].Pixels.Length} {Letters.Count}");
-
-                for (int i = 0; i < Letters.Count; ++i)
-                {
-
-                    f.WriteLine(string.Join(" ", Letters[i].Pixels.Select(x => x.IsSelected ? "1" : "0")));
-
-                    var output = new double[Letters.Count];
-                    output[i] = 1.0;
-
-
-                    f.WriteLine(string.Join(" ", output));
-                }
-            }
+            Patterns.SaveToFann(dialog.FileName);
         }
 
         private void SaveToXml()
@@ -113,19 +97,7 @@ namespace DataEditor
                 return;
             }
 
-            var root = new XElement("Project");
-            foreach (var letter in Letters)
-            {
-                var item = new XElement("Matrix");
-                item.SetAttributeValue("Name", letter.Name);
-                item.SetAttributeValue("Rows", letter.Rows);
-                item.SetAttributeValue("Columns", letter.Columns);
-                item.Value = string.Join(",", letter.Pixels.Select(x => x.IsSelected ? "1" : "0"));
-                root.Add(item);
-            }
-
-            var doc = new XDocument(root);
-            doc.Save(dialog.FileName);
+            Patterns.SaveToXml(dialog.FileName);
         }
 
         private void LoadFromXml()
@@ -136,32 +108,14 @@ namespace DataEditor
                 DefaultExt = "xml",
                 AddExtension = true
             };
+
             if (dialog.ShowDialog() != true)
             {
                 return;
             }
 
-            Letters.Clear();
-
-            var doc = XDocument.Load(dialog.FileName);
-            foreach (var element in doc.Descendants("Matrix"))
-            {
-                var name = (string) element.Attribute("Name");
-                var rows = (int) element.Attribute("Rows");
-                var columns = (int) element.Attribute("Columns");
-                var pixels = element.Value.Split(',').Select(x => x == "1").ToArray();
-
-                var pattern = new Pattern
-                {
-                    Columns = columns,
-                    Rows = rows,
-                    Name = name
-                };
-                pattern.FillUsing(pixels);
-                Letters.Add(pattern);
-            }
-
-            CurrentLetter = Letters.FirstOrDefault();
+            Patterns.LoadFromXml(dialog.FileName);
+            CurrentLetter = Patterns.FirstOrDefault();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using FANNCSharp;
 using FANNCSharp.Double;
 using PropertyChanged;
@@ -32,8 +31,7 @@ namespace DataEditor
         }
         
         private readonly uint[] Layers = { 55, 25, 35 };
-
         private readonly NeuralNet _network;
-        private readonly ObservableCollection<Pattern> _patterns = new ObservableCollection<Pattern>();
+        private readonly PatternCollection _patterns = new PatternCollection();
     }
 }

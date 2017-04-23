@@ -30,7 +30,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Matryca:</TextBlock>
-                        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Letters}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentLetter}" Margin="5,2.5" VerticalContentAlignment="Center"/>
+                        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Patterns}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentLetter}" Margin="5,2.5" VerticalContentAlignment="Center"/>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Nazwa:</TextBlock>
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentLetter.Name, UpdateSourceTrigger=PropertyChanged}" Margin="5,2.5" VerticalContentAlignment="Center"/>
@@ -57,7 +57,7 @@
                                     <Setter Property="VerticalAlignment" Value="Center" />
                                 </Style>
                             </UniformGrid.Resources>
-                            <Button Content="Dodaj matrycę" Command="{Binding NewMatrixCommand}" />
+                            <Button Content="Dodaj matrycę" Command="{Binding NewPatternCommand}" />
                             <Button Content="Zapisz do FANN" Command="{Binding SaveToFannCommand}" />
                             <Button Content="Zapisz do XML" Command="{Binding SaveToXmlCommand}" />
                             <Button Content="Wczytaj z XML" Command="{Binding LoadFromXmlCommand}" />
