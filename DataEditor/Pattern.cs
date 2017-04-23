@@ -61,6 +61,11 @@ namespace DataEditor
             }
         }
 
+        public double[] ToVector()
+        {
+            return Pixels.Select(x => x.IsSelected ? 1.0 : 0.0).ToArray();
+        }
+
         private void UpdateSize()
         {
             var oldRows = _pixels.GetLength(0);

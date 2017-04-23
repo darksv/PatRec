@@ -81,16 +81,20 @@ namespace DataEditor
                     }, null);
 
                     _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
-                    
-                    for (uint i = 0; i < data.TrainDataLength; i++)
-                    {
-                        var input = data.InputAccessor[(int) i];
-                        var desiredOutput = data.OutputAccessor[(int) i];
-                        var calculatedOutput = _network.Run(input);
-                        var difference = Enumerable.Zip(calculatedOutput, desiredOutput.Array, (xc, xd) => xc - xd);
 
-                        AddLine(
-                            $"({FormatArray(input.Array)}) -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput.Array)}), differences = ({FormatArray(difference)})");
+                    int i = 0;
+                    foreach (var pattern in _patterns)
+                    {
+                        var input = pattern.ToVector();
+                        var desiredOutput = new double[_patterns.Count()];
+                        desiredOutput[i] = 1.0;
+                        
+                        var calculatedOutput = _network.Run(input);
+                        var difference = Enumerable.Zip(calculatedOutput, desiredOutput, (xc, xd) => xc - xd);
+
+                        AddLine($"{pattern.Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})");
+
+                        i++;
                     }
                 }
 
@@ -106,7 +110,7 @@ namespace DataEditor
         {
             return FannAbs(x) < float.Epsilon
                 ? 0.ToString()
-                : x.ToString("+0.#####;-0.#####");
+                : x.ToString("0.0000");
         }
 
         private static string FormatArray(IEnumerable<double> arr)

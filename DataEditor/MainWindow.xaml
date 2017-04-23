@@ -108,7 +108,7 @@
                         <DataGridTextColumn Header="Błąd" Binding="{Binding Error}"  Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
-                <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" />
+                <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" /> 
             </Grid>
         </TabItem>
         <TabItem Header="Testowanie" DataContext="{Binding NetworkTesting}">
