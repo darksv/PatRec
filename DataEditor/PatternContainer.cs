@@ -1,15 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace DataEditor
 {
-    public class PatternCollection : IEnumerable<Pattern>
+    public class PatternContainer
     {
         private readonly ObservableCollection<Pattern> _patterns = new ObservableCollection<Pattern>();
+
+        public ReadOnlyObservableCollection<Pattern> Patterns { get; }
+
+        public PatternContainer()
+        {
+            Patterns = new ReadOnlyObservableCollection<Pattern>(_patterns);
+        }
 
         public void SaveToFann(string fileName)
         {
@@ -72,20 +77,10 @@ namespace DataEditor
                     Name = name
                 };
                 pattern.FillUsing(pixels);
-                _patterns.Add(pattern);
+                Add(pattern);
             }
         }
         
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public IEnumerator<Pattern> GetEnumerator()
-        {
-            return _patterns.GetEnumerator();
-        }
-
         public void Add(Pattern pattern)
         {
             _patterns.Add(pattern);

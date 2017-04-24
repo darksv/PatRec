@@ -29,19 +29,19 @@ namespace DataEditor
                 TrainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL
             };
             
-            PatternEditor = new PatternEditorViewModel(_patterns);
-            NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
-            NetworkTesting = new NetworkTestingViewModel(_network, _patterns);
+            PatternEditor = new PatternEditorViewModel(_patternContainer);
+            NetworkLearning = new NetworkLearningViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
+            NetworkTesting = new NetworkTestingViewModel(_network, _patternContainer);
 
             if (File.Exists(DefaultDataFile))
             {
-                _patterns.LoadFromXml(DefaultDataFile);
-                PatternEditor.CurrentLetter = _patterns.FirstOrDefault();
+                _patternContainer.LoadFromXml(DefaultDataFile);
+                PatternEditor.CurrentLetter = _patternContainer.Patterns.FirstOrDefault();
             }
         }
         
         private readonly uint[] _layers = { 55, 25, 35 };
         private readonly NeuralNet _network;
-        private readonly PatternCollection _patterns = new PatternCollection();
+        private readonly PatternContainer _patternContainer = new PatternContainer();
     }
 }

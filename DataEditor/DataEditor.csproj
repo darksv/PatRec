@@ -96,7 +96,7 @@
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="NetworkLearningViewModel.cs" />
     <Compile Include="NetworkTestingViewModel.cs" />
-    <Compile Include="PatternCollection.cs" />
+    <Compile Include="PatternContainer.cs" />
     <Compile Include="PatternEditorViewModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Page Include="MainWindow.xaml">

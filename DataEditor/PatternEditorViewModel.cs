@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Win32;
 using PropertyChanged;
@@ -9,7 +11,9 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class PatternEditorViewModel
     {
-        public PatternCollection Patterns { get; }
+        private readonly PatternContainer _patternContainer;
+
+        public CollectionView Patterns { get; }
 
         public Pattern CurrentLetter { get; set; }
 
@@ -21,9 +25,21 @@ namespace DataEditor
 
         public ICommand LoadFromXmlCommand { get; }
 
-        public PatternEditorViewModel(PatternCollection patterns)
+        public PatternEditorViewModel(PatternContainer patternContainer)
         {
-            Patterns = patterns;
+            _patternContainer = patternContainer;
+
+            var viewSource = new CollectionViewSource
+            {
+                Source = _patternContainer.Patterns,
+                SortDescriptions =
+                {
+                    new SortDescription(nameof(Pattern.Name), ListSortDirection.Ascending)
+                },
+                IsLiveSortingRequested = true
+            };
+
+            Patterns = (CollectionView) viewSource.View;
             
             NewPatternCommand = new RelayCommand(x => NewPattern());
             SaveToFannCommand = new RelayCommand(x => SaveToFann());
@@ -34,9 +50,9 @@ namespace DataEditor
         private void NewPattern()
         {
             Pattern pattern;
-            if (Patterns.Any())
+            if (_patternContainer.Patterns.Any())
             {
-                var lastPattern = Patterns.Last();
+                var lastPattern = _patternContainer.Patterns.Last();
 
                 pattern = new Pattern
                 {
@@ -49,16 +65,16 @@ namespace DataEditor
                 pattern = new Pattern();
             }
 
-            pattern.Name = $"#{Patterns.Count()}";
+            pattern.Name = $"#{_patternContainer.Patterns.Count()}";
 
-            Patterns.Add(pattern);
+            _patternContainer.Add(pattern);
             CurrentLetter = pattern;
         }
 
         private void SaveToFann()
         {
-            var previous = Patterns.First();
-            foreach (var letter in Patterns.Skip(1))
+            var previous = _patternContainer.Patterns.First();
+            foreach (var letter in _patternContainer.Patterns.Skip(1))
             {
                 if (previous.Rows != letter.Rows || previous.Columns != letter.Columns)
                 {
@@ -80,7 +96,7 @@ namespace DataEditor
                 return;
             }
 
-            Patterns.SaveToFann(dialog.FileName);
+            _patternContainer.SaveToFann(dialog.FileName);
         }
 
         private void SaveToXml()
@@ -96,7 +112,7 @@ namespace DataEditor
                 return;
             }
 
-            Patterns.SaveToXml(dialog.FileName);
+            _patternContainer.SaveToXml(dialog.FileName);
         }
 
         private void LoadFromXml()
@@ -113,8 +129,8 @@ namespace DataEditor
                 return;
             }
 
-            Patterns.LoadFromXml(dialog.FileName);
-            CurrentLetter = Patterns.FirstOrDefault();
+            _patternContainer.LoadFromXml(dialog.FileName);
+            CurrentLetter = _patternContainer.Patterns.FirstOrDefault();
         }
     }
 }

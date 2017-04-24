@@ -36,12 +36,12 @@ namespace DataEditor
 
         private readonly Dispatcher _dispatcher;
         private readonly NeuralNet _network;
-        private readonly PatternCollection _patterns;
+        private readonly PatternContainer _patternContainer;
 
-        public NetworkLearningViewModel(NeuralNet network, PatternCollection patterns, Dispatcher currentDispatcher)
+        public NetworkLearningViewModel(NeuralNet network, PatternContainer patternContainer, Dispatcher currentDispatcher)
         {
             _network = network;
-            _patterns = patterns;
+            _patternContainer = patternContainer;
             _dispatcher = currentDispatcher;
 
             StartTrainingCommand = new AsyncRelayCommand(x => StartTraining());
@@ -94,7 +94,7 @@ namespace DataEditor
         private void ExecuteTraining(CancellationToken token)
         {
             string filePath = $@"{DateTime.Now:yyyyMMddHHmmss}.txt";
-            _patterns.SaveToFann(filePath);
+            _patternContainer.SaveToFann(filePath);
             _network.LearningRate = LearningRate;
 
             using (TrainingData data = new TrainingData(filePath))
@@ -119,7 +119,7 @@ namespace DataEditor
 
                 _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
 
-                var patterns = _patterns.ToArray();
+                var patterns = _patternContainer.Patterns.ToArray();
                 for (int i = 0; i < patterns.Length; ++i)
                 {
                     var input = patterns[i].ToVector();

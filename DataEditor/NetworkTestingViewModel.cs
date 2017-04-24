@@ -9,9 +9,9 @@ namespace DataEditor
     public class NetworkTestingViewModel
     {
         private readonly NeuralNet _network;
-        private readonly PatternCollection _patterns;
+        private readonly PatternContainer _patterns;
 
-        public NetworkTestingViewModel(NeuralNet network, PatternCollection patterns)
+        public NetworkTestingViewModel(NeuralNet network, PatternContainer patterns)
         {
             _network = network;
             _patterns = patterns;
@@ -34,7 +34,7 @@ namespace DataEditor
                 .Select(x => x.Index)
                 .First();
 
-            Predictions = _patterns
+            Predictions = _patterns.Patterns
                 .GroupBy(x => x.Name)
                 .Select((t, i) => new Prediction
                 {
