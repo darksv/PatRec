@@ -10,10 +10,10 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class MainWindowViewModel
     {
-        const string DefaultDataFile = "Resources/letters.xml";
+        private const string DefaultDataFile = "Resources/letters.xml";
 
         public PatternEditorViewModel PatternEditor { get; }
-        public NetworkLearningViewModel NetworkLearning { get; }
+        public NetworkTrainingViewModel NetworkTraining { get; }
         public NetworkTestingViewModel NetworkTesting { get; }
 
         public MainWindowViewModel()
@@ -30,7 +30,7 @@ namespace DataEditor
             };
             
             PatternEditor = new PatternEditorViewModel(_patternContainer);
-            NetworkLearning = new NetworkLearningViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
+            NetworkTraining = new NetworkTrainingViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network, _patternContainer);
 
             if (File.Exists(DefaultDataFile))

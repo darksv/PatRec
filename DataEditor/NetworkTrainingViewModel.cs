@@ -12,7 +12,7 @@ using PropertyChanged;
 namespace DataEditor
 {
     [ImplementPropertyChanged]
-    public class NetworkLearningViewModel
+    public class NetworkTrainingViewModel
     {
         public string Log { get; set; } = string.Empty;
 
@@ -38,7 +38,7 @@ namespace DataEditor
         private readonly NeuralNet _network;
         private readonly PatternContainer _patternContainer;
 
-        public NetworkLearningViewModel(NeuralNet network, PatternContainer patternContainer, Dispatcher currentDispatcher)
+        public NetworkTrainingViewModel(NeuralNet network, PatternContainer patternContainer, Dispatcher currentDispatcher)
         {
             _network = network;
             _patternContainer = patternContainer;

@@ -94,7 +94,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AsyncRelayCommand.cs" />
-    <Compile Include="NetworkLearningViewModel.cs" />
+    <Compile Include="NetworkTrainingViewModel.cs" />
     <Compile Include="NetworkTestingViewModel.cs" />
     <Compile Include="PatternContainer.cs" />
     <Compile Include="PatternEditorViewModel.cs" />

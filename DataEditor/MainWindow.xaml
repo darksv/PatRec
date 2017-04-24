@@ -70,7 +70,7 @@
                 <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
             </Grid>
         </TabItem>
-        <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkLearning}">
+        <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkTraining}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

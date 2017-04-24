@@ -9,12 +9,12 @@ namespace DataEditor
     public class NetworkTestingViewModel
     {
         private readonly NeuralNet _network;
-        private readonly PatternContainer _patterns;
+        private readonly PatternContainer _patternContainer;
 
-        public NetworkTestingViewModel(NeuralNet network, PatternContainer patterns)
+        public NetworkTestingViewModel(NeuralNet network, PatternContainer patternContainer)
         {
             _network = network;
-            _patterns = patterns;
+            _patternContainer = patternContainer;
             PredictCommand = new RelayCommand(x => Predict());
         }
 
@@ -34,13 +34,13 @@ namespace DataEditor
                 .Select(x => x.Index)
                 .First();
 
-            Predictions = _patterns.Patterns
-                .GroupBy(x => x.Name)
-                .Select((t, i) => new Prediction
+            Predictions = _patternContainer.Patterns
+                .GroupBy(pattern => pattern.Name)
+                .Select((group, index) => new Prediction
                 {
-                    Name = t.Key,
-                    Value = output[i],
-                    IsHighest = i == maxIndex
+                    Name = group.Key,
+                    Value = output[index],
+                    IsHighest = index == maxIndex
                 }).ToArray();
         }
 
