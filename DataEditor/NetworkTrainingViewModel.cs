@@ -136,7 +136,8 @@ namespace DataEditor
 
         private void CancelTraining()
         {
-            _cancellationTokenSource?.Cancel();
+            CanCancelTraining = false;
+            _cancellationTokenSource?.Cancel();   
         }
     }
 }
