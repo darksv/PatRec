@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
-using FANNCSharp.Double;
 using PropertyChanged;
 
 namespace DataEditor
@@ -35,10 +34,10 @@ namespace DataEditor
         private CancellationTokenSource _cancellationTokenSource;
 
         private readonly Dispatcher _dispatcher;
-        private readonly NeuralNet _network;
+        private readonly NeuralNetwork _network;
         private readonly PatternContainer _patternContainer;
 
-        public NetworkTrainingViewModel(NeuralNet network, PatternContainer patternContainer, Dispatcher currentDispatcher)
+        public NetworkTrainingViewModel(NeuralNetwork network, PatternContainer patternContainer, Dispatcher currentDispatcher)
         {
             _network = network;
             _patternContainer = patternContainer;
@@ -93,44 +92,34 @@ namespace DataEditor
 
         private void ExecuteTraining(CancellationToken token)
         {
+            _dispatcher.Invoke(() => Epochs.Clear());
+
             string filePath = $@"{DateTime.Now:yyyyMMddHHmmss}.txt";
             _patternContainer.SaveToFann(filePath);
+
             _network.LearningRate = LearningRate;
-
-            using (TrainingData data = new TrainingData(filePath))
+            _network.Train(filePath, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
             {
-                data.ShuffleTrainData();
-
-                _dispatcher.Invoke(() => Epochs.Clear());
-
-                _network.InitWeights(data);
-                _network.SetCallback((net, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
+                _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
                 {
-                    _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
-                    {
-                        Number = epochs,
-                        Error = net.MSE,
-                    }));
+                    Number = epochs,
+                    Error = cost,
+                }));
 
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
+            });
+            
+            var patterns = _patternContainer.Patterns.ToArray();
+            for (int i = 0; i < patterns.Length; ++i)
+            {
+                var input = patterns[i].ToVector();
+                var desiredOutput = Enumerable.Repeat(0.0, patterns.Length).ToArray();
+                desiredOutput[i] = 1.0;
 
-                    return 0;
-                }, null);
+                var calculatedOutput = _network.Run(input);
+                var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
 
-                _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
-
-                var patterns = _patternContainer.Patterns.ToArray();
-                for (int i = 0; i < patterns.Length; ++i)
-                {
-                    var input = patterns[i].ToVector();
-                    var desiredOutput = Enumerable.Repeat(0.0, patterns.Length).ToArray();
-                    desiredOutput[i] = 1.0;
-
-                    var calculatedOutput = _network.Run(input);
-                    var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
-
-                    Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
-                }
+                Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
             }
         }
 

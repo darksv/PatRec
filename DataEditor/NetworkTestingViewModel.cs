@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Windows.Input;
-using FANNCSharp.Double;
 using PropertyChanged;
 
 namespace DataEditor
@@ -8,10 +7,10 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class NetworkTestingViewModel
     {
-        private readonly NeuralNet _network;
+        private readonly NeuralNetwork _network;
         private readonly PatternContainer _patternContainer;
 
-        public NetworkTestingViewModel(NeuralNet network, PatternContainer patternContainer)
+        public NetworkTestingViewModel(NeuralNetwork network, PatternContainer patternContainer)
         {
             _network = network;
             _patternContainer = patternContainer;
