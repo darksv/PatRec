@@ -93,7 +93,7 @@ namespace DataEditor
 
         private void ExecuteTraining(CancellationToken token)
         {
-            string filePath = $@"{DateTime.Now:yyyyMMddhhmmss}.txt";
+            string filePath = $@"{DateTime.Now:yyyyMMddHHmmss}.txt";
             _patterns.SaveToFann(filePath);
             _network.LearningRate = LearningRate;
 
