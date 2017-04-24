@@ -15,18 +15,23 @@ namespace DataEditor
         {
             using (var f = new StreamWriter(fileName))
             {
-                f.WriteLine($"{_patterns.Count} {_patterns[0].Pixels.Length} {_patterns.Count}");
+                var groups = _patterns
+                    .GroupBy(pattern => pattern.Name)
+                    .ToArray();
 
-                for (int i = 0; i < _patterns.Count; ++i)
+                f.WriteLine($"{_patterns.Count} {_patterns[0].Pixels.Length} {groups.Length}");
+                
+                for (int i = 0; i < groups.Length; ++i)
                 {
+                    foreach (var pattern in groups[i])
+                    {
+                        f.WriteLine(string.Join(" ", pattern.ToVector()));
 
-                    f.WriteLine(string.Join(" ", _patterns[i].Pixels.Select(x => x.IsSelected ? "1" : "0")));
+                        var output = Enumerable.Repeat(0.0, groups.Length).ToArray();
+                        output[i] = 1.0;
 
-                    var output = new double[_patterns.Count];
-                    output[i] = 1.0;
-
-
-                    f.WriteLine(string.Join(" ", output));
+                        f.WriteLine(string.Join(" ", output));
+                    }
                 }
             }
         }
