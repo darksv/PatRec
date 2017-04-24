@@ -61,9 +61,9 @@ namespace DataEditor
             }
         }
 
-        public double[] ToVector()
+        public double[] ToVector(double absenceValue = 0.0, double presenceValue = 1.0)
         {
-            return Pixels.Select(x => x.IsSelected ? 1.0 : 0.0).ToArray();
+            return Pixels.Select(x => x.IsSelected ? presenceValue : absenceValue).ToArray();
         }
 
         private void UpdateSize()

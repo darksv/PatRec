@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Windows.Threading;
 using FANNCSharp;
 using FANNCSharp.Double;
@@ -17,7 +18,7 @@ namespace DataEditor
 
         public MainWindowViewModel()
         {
-            _network = new NeuralNet(NetworkType.LAYER, (uint) Layers.Length, Layers)
+            _network = new NeuralNet(NetworkType.LAYER, (uint) _layers.Length, _layers)
             {
                 ActivationSteepnessHidden = 0.75f,
                 ActivationSteepnessOutput = 1.0f,
@@ -27,18 +28,19 @@ namespace DataEditor
 
                 TrainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL
             };
+            
+            PatternEditor = new PatternEditorViewModel(_patterns);
+            NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
+            NetworkTesting = new NetworkTestingViewModel(_network, _patterns);
 
             if (File.Exists(DefaultDataFile))
             {
                 _patterns.LoadFromXml(DefaultDataFile);
+                PatternEditor.CurrentLetter = _patterns.FirstOrDefault();
             }
-
-            PatternEditor = new PatternEditorViewModel(_patterns);
-            NetworkLearning = new NetworkLearningViewModel(_network, _patterns, Dispatcher.CurrentDispatcher);
-            NetworkTesting = new NetworkTestingViewModel(_network, _patterns);
         }
         
-        private readonly uint[] Layers = { 55, 25, 35 };
+        private readonly uint[] _layers = { 55, 25, 35 };
         private readonly NeuralNet _network;
         private readonly PatternCollection _patterns = new PatternCollection();
     }

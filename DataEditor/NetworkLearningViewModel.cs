@@ -119,19 +119,17 @@ namespace DataEditor
 
                 _network.TrainOnData(data, MaxIterations, IterationsBetweenReports, DesiredError);
 
-                int i = 0;
-                foreach (var pattern in _patterns)
+                var patterns = _patterns.ToArray();
+                for (int i = 0; i < patterns.Length; ++i)
                 {
-                    var input = pattern.ToVector();
-                    var desiredOutput = new double[_patterns.Count()];
+                    var input = patterns[i].ToVector();
+                    var desiredOutput = Enumerable.Repeat(0.0, patterns.Length).ToArray();
                     desiredOutput[i] = 1.0;
 
                     var calculatedOutput = _network.Run(input);
-                    var difference = Enumerable.Zip(calculatedOutput, desiredOutput, (xc, xd) => xc - xd);
+                    var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
 
-                    Log += $"{pattern.Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
-
-                    i++;
+                    Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
                 }
             }
         }
