@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using PropertyChanged;
 
@@ -16,9 +17,9 @@ namespace DataEditor
             DataContext = _viewModel;
         }
 
-        private void PixelDrawer_OnPatternChanged(object sender, EventArgs e)
+        private async void PixelDrawer_OnPatternChanged(object sender, EventArgs e)
         {
-            _viewModel.NetworkTesting.Predict();
+            await Task.Run(() => _viewModel.NetworkTesting.Predict());
         }
     }
 }

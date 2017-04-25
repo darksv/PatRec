@@ -11,12 +11,14 @@ namespace DataEditor
         private const string DefaultDataFile = "Resources/letters.xml";
 
         public PatternEditorViewModel PatternEditor { get; }
+        public NetworkEditorViewModel NetworkEditor { get; }
         public NetworkTrainingViewModel NetworkTraining { get; }
         public NetworkTestingViewModel NetworkTesting { get; }
 
         public MainWindowViewModel()
         {
             PatternEditor = new PatternEditorViewModel(_patternContainer);
+            NetworkEditor = new NetworkEditorViewModel(_network);
             NetworkTraining = new NetworkTrainingViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network, _patternContainer);
 

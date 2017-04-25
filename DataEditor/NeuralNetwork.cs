@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FANNCSharp;
 using FANNCSharp.Double;
+using PropertyChanged;
 
 namespace DataEditor
 {
+    [ImplementPropertyChanged]
     public class NeuralNetwork
     {
-        public NeuralNetwork()
+        private void RebuildNetwork()
         {
-            _network = new NeuralNet(NetworkType.LAYER, (uint)_layers.Length, _layers)
+            var layers = MakeLayers().ToArray();
+
+            _network = new NeuralNet(NetworkType.LAYER, (uint)layers.Length, layers)
             {
                 ActivationSteepnessHidden = 0.75f,
                 ActivationSteepnessOutput = 1.0f,
@@ -18,27 +24,36 @@ namespace DataEditor
 
                 TrainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL,
 
-                LearningRate = 0.7f
+                LearningRate = LearningRate
             };
         }
 
-        public float LearningRate
+        private IEnumerable<uint> MakeLayers()
         {
-            get { return _network.LearningRate; }
-            set { _network.LearningRate = value; }
+            yield return NumberOfInputs;
+            foreach (var hiddenLayer in HiddenLayers)
+            {
+                yield return hiddenLayer;
+            }
+            yield return NumberOfOutputs;
         }
-
+        
         public double[] Run(double[] input)
         {
+            CreateNetworkIfNeccessary();
+
             return _network.Run(input);
         }
 
-        public void Train(string filePath, uint maxIterations, uint iterationsBetweenReports, float desiredError, Action<uint, float> costCallback)
+        public void Train(string filePath, uint maxIterations, uint iterationsBetweenReports, float desiredError,
+            Action<uint, float> costCallback)
         {
+            CreateNetworkIfNeccessary();
+
             using (TrainingData data = new TrainingData(filePath))
             {
                 data.ShuffleTrainData();
-                
+
                 _network.InitWeights(data);
                 _network.SetCallback((net, train, maxEpochs, epochsBetweenReports, _, epochs, userData) =>
                 {
@@ -51,7 +66,128 @@ namespace DataEditor
             }
         }
 
-        private readonly uint[] _layers = { 55, 25, 35 };
-        private readonly NeuralNet _network;
+        private void CreateNetworkIfNeccessary()
+        {
+            if (_network == null)
+            {
+                RebuildNetwork();
+            }
+        }
+        
+        private uint _numberOfInputs = 55;
+        private uint[] _hiddenLayers = { 25 };
+        private uint _numberOfOutputs = 35;
+        private float _learningRate = 0.7f;
+        private double _activationSteepnessHidden = 0.75;
+        private double _activationSteepnessOutput = 1.0;
+        private ActivationFunction _activationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
+        private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID;
+        private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL;
+        
+        public uint NumberOfInputs
+        {
+            get { return _numberOfInputs; }
+            set
+            {
+                if (_numberOfOutputs == value)
+                {
+                    return;
+                }
+
+                _numberOfInputs = value;
+                _network = null;
+            }
+        }
+
+        public uint NumberOfOutputs
+        {
+            get { return _numberOfOutputs; }
+            set
+            {
+                if (_numberOfOutputs == value)
+                {
+                    return;
+                }
+                _numberOfOutputs = value;
+                _network = null;
+            }
+        }
+
+        public uint[] HiddenLayers
+        {
+            get { return _hiddenLayers; }
+            set
+            {
+                if (_hiddenLayers.SequenceEqual(value))
+                {
+                    return;
+                }
+
+                _hiddenLayers = value;
+                _network = null;
+            }
+        }
+
+        public float LearningRate
+        {
+            get { return _learningRate; }
+            set
+            {
+                _learningRate = value;
+                _network.LearningRate = value;
+            }
+        }
+
+        public double ActivationSteepnessHidden
+        {
+            get { return _activationSteepnessHidden; }
+            set
+            {
+                _activationSteepnessHidden = value;
+                _network.ActivationSteepnessHidden = value;
+            }
+        }
+
+        public double ActivationSteepnessOutput
+        {
+            get { return _activationSteepnessOutput; }
+            set
+            {
+                _activationSteepnessOutput = value;
+                _network.ActivationSteepnessOutput = value;
+            }
+        }
+
+        public ActivationFunction ActivationFunctionHidden
+        {
+            get { return _activationFunctionHidden; }
+            set
+            {
+                _activationFunctionHidden = value;
+                _network.ActivationFunctionHidden = value;
+            }
+        }
+
+        public ActivationFunction ActivationFunctionOutput
+        {
+            get { return _activationFunctionOutput; }
+            set
+            {
+                _activationFunctionOutput = value;
+                _network.ActivationFunctionOutput = value;
+            }
+        }
+
+        public TrainingAlgorithm TrainingAlgorithm
+        {
+            get { return _trainingAlgorithm; }
+            set
+            {
+                _trainingAlgorithm = value;
+                _network.TrainingAlgorithm = value;
+            }
+        }
+        
+        private NeuralNet _network;
     }
 }

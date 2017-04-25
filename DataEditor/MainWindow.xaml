@@ -70,6 +70,39 @@
                 <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
             </Grid>
         </TabItem>
+        <TabItem Header="Edycja sieci" DataContext="{Binding NetworkEditor}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Padding" Value="2.5" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </Grid.Resources>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Funkcja aktywacji warstw ukrytych:" />
+                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Funkcja aktywacji warstwy wyjściowej:" />
+                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Stromość funkcji aktywacji warstw ukrytych:" />
+                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Stromość funkcji aktywacji warstwy wyjściowej:" />
+                <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
+                <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
+            </Grid>
+        </TabItem>
         <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkTraining}">
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -97,6 +97,9 @@ namespace DataEditor
             string filePath = $@"{DateTime.Now:yyyyMMddHHmmss}.txt";
             _patternContainer.SaveToFann(filePath);
 
+            _network.NumberOfInputs = (uint) _patternContainer.Patterns.First().Pixels.Length;
+            _network.NumberOfOutputs = (uint) _patternContainer.Patterns.GroupBy(x => x.Name).Count();
+
             _network.LearningRate = LearningRate;
             _network.Train(filePath, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
             {
