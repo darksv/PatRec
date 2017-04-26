@@ -16,13 +16,13 @@ namespace DataEditor
 
             _network = new NeuralNet(NetworkType.LAYER, (uint)layers.Length, layers)
             {
-                ActivationSteepnessHidden = 0.75f,
-                ActivationSteepnessOutput = 1.0f,
+                ActivationSteepnessHidden = ActivationSteepnessHidden,
+                ActivationSteepnessOutput = ActivationSteepnessOutput,
 
-                ActivationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC,
-                ActivationFunctionOutput = ActivationFunction.SIGMOID,
+                ActivationFunctionHidden = ActivationFunctionHidden,
+                ActivationFunctionOutput = ActivationFunctionOutput,
 
-                TrainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL,
+                TrainingAlgorithm = TrainingAlgorithm,
 
                 LearningRate = LearningRate
             };
@@ -31,7 +31,7 @@ namespace DataEditor
         private IEnumerable<uint> MakeLayers()
         {
             yield return NumberOfInputs;
-            foreach (var hiddenLayer in HiddenLayers)
+            foreach (var hiddenLayer in _hiddenLayers)
             {
                 yield return hiddenLayer;
             }
@@ -113,17 +113,17 @@ namespace DataEditor
             }
         }
 
-        public uint[] HiddenLayers
+        public uint HiddenLayer
         {
-            get { return _hiddenLayers; }
+            get { return _hiddenLayers[0]; }
             set
             {
-                if (_hiddenLayers.SequenceEqual(value))
+                if (_hiddenLayers[0] == value)
                 {
                     return;
                 }
 
-                _hiddenLayers = value;
+                _hiddenLayers[0] = value;
                 _network = null;
             }
         }

@@ -78,6 +78,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -101,6 +102,8 @@
                 <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
                 <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Neurony w warstwie ukrytej:" />
+                <xctk:IntegerUpDown Grid.Row="5" Grid.Column="1" Value="{Binding Network.HiddenLayer}" />
             </Grid>
         </TabItem>
         <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkTraining}">
