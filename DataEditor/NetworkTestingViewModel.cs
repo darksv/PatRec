@@ -17,7 +17,7 @@ namespace DataEditor
             PredictCommand = new RelayCommand(x => Predict());
         }
 
-        public Pattern Pattern { get; } = new Pattern {Rows = 11, Columns = 5};
+        public double[,] Pixels { get; set; }
 
         public Prediction[] Predictions { get; private set; }
 
@@ -25,7 +25,12 @@ namespace DataEditor
 
         public void Predict()
         {
-            var output = _network.Run(Pattern.ToVector());
+            if (Pixels == null)
+            {
+                return;
+            }
+
+            var output = _network.Run(Pixels.Cast<double>().Select(x => x >= 0.5 ? -1.0 : 1.0).ToArray());
 
             var maxIndex = output
                 .Select((value, index) => new {Index = index, Value = value})
@@ -35,6 +40,7 @@ namespace DataEditor
 
             Predictions = _patternContainer.Patterns
                 .GroupBy(pattern => pattern.Name)
+                .OrderBy(x => x.Key)
                 .Select((group, index) => new Prediction
                 {
                     Name = group.Key,

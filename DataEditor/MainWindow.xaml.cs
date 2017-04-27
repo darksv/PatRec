@@ -21,5 +21,15 @@ namespace DataEditor
         {
             await Task.Run(() => _viewModel.NetworkTesting.Predict());
         }
+
+        private void ClearPattern_OnClick(object sender, RoutedEventArgs e)
+        {
+            PatternInput.Clear();
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            InputPattern.Clear();
+        }
     }
 }

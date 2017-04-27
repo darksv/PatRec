@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -16,26 +17,55 @@ namespace DataEditor
             Patterns = new ReadOnlyObservableCollection<Pattern>(_patterns);
         }
 
-        public void SaveToFann(string fileName)
+        public void SaveToFann(string trainFileName, string testFileName)
         {
-            using (var f = new StreamWriter(fileName))
+            if (!_patterns.Any())
             {
-                var groups = _patterns
-                    .GroupBy(pattern => pattern.Name)
-                    .ToArray();
+                return;
+            }
 
-                f.WriteLine($"{_patterns.Count} {_patterns[0].Pixels.Length} {groups.Length}");
-                
+            var groups = _patterns
+                .GroupBy(pattern => pattern.Name)
+                .ToArray();
+
+            var numberOfAllSamples = _patterns.Count;
+
+            var minCount = groups.Min(x => x.Count());
+            var numberOfTrainSamples = groups.Length * minCount;
+            var numberOfTestSamples = numberOfAllSamples - numberOfTrainSamples;
+
+            var inputs = _patterns[0].Pixels.Length;
+            var outputs = groups.Length;
+
+            using (var f = new StreamWriter(trainFileName))
+            using (var g = new StreamWriter(testFileName))
+            {
+                f.WriteLine($"{numberOfTrainSamples} {inputs} {outputs}");
+                g.WriteLine($"{numberOfTestSamples} {inputs} {outputs}");
+
                 for (int i = 0; i < groups.Length; ++i)
                 {
-                    foreach (var pattern in groups[i])
-                    {
-                        f.WriteLine(string.Join(" ", pattern.ToVector()));
+                    var trainSamples = groups[i].OrderBy(x => Guid.NewGuid()).Take(minCount);
+                    var testSamples = groups[i].OrderBy(x => Guid.NewGuid()).Skip(minCount);
 
-                        var output = Enumerable.Repeat(0.0, groups.Length).ToArray();
+                    foreach (var pattern in trainSamples)
+                    {
+                        f.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
+
+                        var output = Enumerable.Repeat(-1.0, groups.Length).ToArray();
                         output[i] = 1.0;
 
                         f.WriteLine(string.Join(" ", output));
+                    }
+
+                    foreach (var pattern in testSamples)
+                    {
+                        g.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
+
+                        var output = Enumerable.Repeat(-1.0, groups.Length).ToArray();
+                        output[i] = 1.0;
+
+                        g.WriteLine(string.Join(" ", output));
                     }
                 }
             }

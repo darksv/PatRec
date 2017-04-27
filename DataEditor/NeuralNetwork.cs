@@ -66,6 +66,16 @@ namespace DataEditor
             }
         }
 
+        public float Test(string filePath)
+        {
+            CreateNetworkIfNeccessary();
+
+            using (TrainingData data = new TrainingData(filePath))
+            {
+                return _network.TestData(data);
+            }
+        }
+
         private void CreateNetworkIfNeccessary()
         {
             if (_network == null)
@@ -75,13 +85,13 @@ namespace DataEditor
         }
         
         private uint _numberOfInputs = 55;
-        private uint[] _hiddenLayers = { 25 };
+        private uint[] _hiddenLayers = { 125 };
         private uint _numberOfOutputs = 35;
-        private float _learningRate = 0.7f;
-        private double _activationSteepnessHidden = 0.75;
-        private double _activationSteepnessOutput = 1.0;
+        private float _learningRate = 0.25f;
+        private double _activationSteepnessHidden = 1.0;
+        private double _activationSteepnessOutput = 2.0;
         private ActivationFunction _activationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
-        private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID;
+        private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID_SYMMETRIC;
         private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL;
         
         public uint NumberOfInputs
@@ -134,7 +144,11 @@ namespace DataEditor
             set
             {
                 _learningRate = value;
-                _network.LearningRate = value;
+
+                if (_network != null)
+                {
+                    _network.LearningRate = value;
+                }
             }
         }
 
@@ -144,7 +158,11 @@ namespace DataEditor
             set
             {
                 _activationSteepnessHidden = value;
-                _network.ActivationSteepnessHidden = value;
+
+                if (_network != null)
+                {
+                    _network.ActivationSteepnessHidden = value;
+                }
             }
         }
 
@@ -154,7 +172,11 @@ namespace DataEditor
             set
             {
                 _activationSteepnessOutput = value;
-                _network.ActivationSteepnessOutput = value;
+
+                if (_network != null)
+                {
+                    _network.ActivationSteepnessOutput = value;
+                }
             }
         }
 
@@ -164,7 +186,11 @@ namespace DataEditor
             set
             {
                 _activationFunctionHidden = value;
-                _network.ActivationFunctionHidden = value;
+
+                if (_network != null)
+                {
+                    _network.ActivationFunctionHidden = value;
+                }
             }
         }
 
@@ -174,7 +200,11 @@ namespace DataEditor
             set
             {
                 _activationFunctionOutput = value;
-                _network.ActivationFunctionOutput = value;
+
+                if (_network != null)
+                {
+                    _network.ActivationFunctionOutput = value;
+                }
             }
         }
 
@@ -184,7 +214,11 @@ namespace DataEditor
             set
             {
                 _trainingAlgorithm = value;
-                _network.TrainingAlgorithm = value;
+
+                if (_network != null)
+                {
+                    _network.TrainingAlgorithm = value;
+                }
             }
         }
         

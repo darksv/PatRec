@@ -8,66 +8,52 @@
         xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:visualisation="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         mc:Ignorable="d"
-        Title="Rozpoznawanie wzorców" Height="750" Width="500" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
+        Title="Rozpoznawanie wzorców" Height="600" Width="600" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance local:MainWindowViewModel}">
+    <Window.InputBindings>
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding PatternEditor.LoadFromXmlCommand}" />
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding PatternEditor.SaveToXmlCommand}" />
+    </Window.InputBindings>
     <TabControl>
-        <TabItem Header="Edycja znaków" DataContext="{Binding PatternEditor}">
+        <TabItem Header="Dane" DataContext="{Binding PatternEditor}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" Padding="10">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Matryca:</TextBlock>
-                        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Patterns}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentLetter}" Margin="5,2.5" VerticalContentAlignment="Center"/>
-
-                        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Nazwa:</TextBlock>
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CurrentLetter.Name, UpdateSourceTrigger=PropertyChanged}" Margin="5,2.5" VerticalContentAlignment="Center"/>
-
-                        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Right">Wymiary:</TextBlock>
-                        <Border Grid.Row="2" Grid.Column="1" Margin="5,2.5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <xctk:IntegerUpDown Grid.Column="0" Value="{Binding CurrentLetter.Rows}" Minimum="1"/>
-                                <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="5,0">✖</TextBlock>
-                                <xctk:IntegerUpDown Grid.Column="2" Value="{Binding CurrentLetter.Columns}" Minimum="1" />
-                            </Grid>
-                        </Border>
-
-                        <UniformGrid Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Margin="5,0,0,0" Rows="2" Columns="2">
-                            <UniformGrid.Resources>
-                                <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Margin" Value="2.5" />
-                                    <Setter Property="Padding" Value="5,2.5" />
-                                    <Setter Property="VerticalAlignment" Value="Center" />
-                                </Style>
-                            </UniformGrid.Resources>
-                            <Button Content="Dodaj matrycę" Command="{Binding NewPatternCommand}" />
-                            <Button Content="Zapisz do FANN" Command="{Binding SaveToFannCommand}" />
-                            <Button Content="Zapisz do XML" Command="{Binding SaveToXmlCommand}" />
-                            <Button Content="Wczytaj z XML" Command="{Binding LoadFromXmlCommand}" />
-                        </UniformGrid>
-                    </Grid>
-                </Border>
-
-                <local:PixelDrawer Grid.Row="1" Pattern="{Binding CurrentLetter}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ItemsControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding PatternGroups}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Padding="1.5" />
+                                <TextBlock FontWeight="Normal" Text="{Binding NumberOfSamples}" Padding="1.5" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <local:PatternInput Grid.Row="1" Grid.Column="1" x:Name="PatternInput" Pixels="{Binding Pixels, Mode=OneWayToSource}" Rows="15" Columns="10" />
+                <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBox Margin="2.5,5" Padding="10,5" Text="{Binding SaveAsName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="Dodaj do danych uczących" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern_OnClick"/>
+                        <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ClearPattern_OnClick" />
+                    </StackPanel>
+                </Grid>
             </Grid>
         </TabItem>
         <TabItem Header="Edycja sieci" DataContext="{Binding NetworkEditor}">
@@ -191,9 +177,14 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <local:PixelDrawer Grid.Column="0" Grid.ColumnSpan="2" Pattern="{Binding Pattern}" PatternChanged="PixelDrawer_OnPatternChanged" />
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <local:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" PatternChanged="PixelDrawer_OnPatternChanged" Rows="15" Columns="10"/>
+                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Content="Czyść" Click="ButtonBase_OnClick" />
+                
+                <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Horizontal" Margin="0,0,10,0">
                     <StackPanel.Resources>
                         <Style x:Key="ValueStyle" TargetType="TextBlock">
                             <Style.Triggers>

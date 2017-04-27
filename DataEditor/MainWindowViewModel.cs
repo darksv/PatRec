@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.Windows.Threading;
+﻿using System.Windows.Threading;
 using PropertyChanged;
 
 namespace DataEditor
@@ -8,8 +6,6 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class MainWindowViewModel
     {
-        private const string DefaultDataFile = "Resources/letters.xml";
-
         public PatternEditorViewModel PatternEditor { get; }
         public NetworkEditorViewModel NetworkEditor { get; }
         public NetworkTrainingViewModel NetworkTraining { get; }
@@ -21,12 +17,6 @@ namespace DataEditor
             NetworkEditor = new NetworkEditorViewModel(_network);
             NetworkTraining = new NetworkTrainingViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network, _patternContainer);
-
-            if (File.Exists(DefaultDataFile))
-            {
-                _patternContainer.LoadFromXml(DefaultDataFile);
-                PatternEditor.CurrentLetter = _patternContainer.Patterns.FirstOrDefault();
-            }
         }
 
         private readonly NeuralNetwork _network = new NeuralNetwork();

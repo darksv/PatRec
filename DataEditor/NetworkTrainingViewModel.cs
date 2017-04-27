@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using PropertyChanged;
@@ -29,7 +30,7 @@ namespace DataEditor
 
         public uint MaxIterations { get; set; } = 1000;
 
-        public uint IterationsBetweenReports { get; set; } = 10;
+        public uint IterationsBetweenReports { get; set; } = 100;
 
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -94,14 +95,15 @@ namespace DataEditor
         {
             _dispatcher.Invoke(() => Epochs.Clear());
 
-            string filePath = $@"{DateTime.Now:yyyyMMddHHmmss}.txt";
-            _patternContainer.SaveToFann(filePath);
+            string trainFile = $@"{DateTime.Now:yyyyMMddHHmmss}.train";
+            string testFile = $@"{DateTime.Now:yyyyMMddHHmmss}.test";
+            _patternContainer.SaveToFann(trainFile, testFile);
 
             _network.NumberOfInputs = (uint) _patternContainer.Patterns.First().Pixels.Length;
             _network.NumberOfOutputs = (uint) _patternContainer.Patterns.GroupBy(x => x.Name).Count();
 
             _network.LearningRate = LearningRate;
-            _network.Train(filePath, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
+            _network.Train(trainFile, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
             {
                 _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
                 {
@@ -111,19 +113,21 @@ namespace DataEditor
 
                 token.ThrowIfCancellationRequested();
             });
-            
-            var patterns = _patternContainer.Patterns.ToArray();
-            for (int i = 0; i < patterns.Length; ++i)
-            {
-                var input = patterns[i].ToVector();
-                var desiredOutput = Enumerable.Repeat(0.0, patterns.Length).ToArray();
-                desiredOutput[i] = 1.0;
 
-                var calculatedOutput = _network.Run(input);
-                var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
+            Log += $"{_network.Test(testFile)}";
 
-                Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
-            }
+//            var patterns = _patternContainer.Patterns.ToArray();
+//            for (int i = 0; i < patterns.Length; ++i)
+//            {
+//                var input = patterns[i].ToVector(-1.0, 1.0);
+//                var desiredOutput = Enumerable.Repeat(-1.0, patterns.Length).ToArray();
+//                desiredOutput[i] = 1.0;
+//
+//                var calculatedOutput = _network.Run(input);
+//                var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
+//
+//                Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
+//            }
         }
 
         private void CancelTraining()

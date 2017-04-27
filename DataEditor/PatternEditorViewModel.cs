@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -14,8 +15,21 @@ namespace DataEditor
         private readonly PatternContainer _patternContainer;
 
         public CollectionView Patterns { get; }
+        
+        public PatternGroup[] PatternGroups { get; private set; }
 
-        public Pattern CurrentLetter { get; set; }
+        public class PatternGroup
+        {
+            public string Name { get; set; }
+
+            public int NumberOfSamples { get; set; }
+        }
+
+        public string SaveAsName { get; set; }
+
+        public double[,] Pixels { get; set; }
+
+        public ICommand AddToTrainingSetCommand { get; }
 
         public ICommand NewPatternCommand { get; }
 
@@ -40,11 +54,40 @@ namespace DataEditor
             };
 
             Patterns = (CollectionView) viewSource.View;
+
+            ((INotifyCollectionChanged) _patternContainer.Patterns).CollectionChanged += (sender, args) =>
+            {
+                PatternGroups = _patternContainer.Patterns
+                    .GroupBy(x => x.Name)
+                    .OrderBy(x => x.Key)
+                    .Select(x => new PatternGroup {Name = x.Key, NumberOfSamples = x.Count()})
+                    .ToArray();
+            };
             
+            AddToTrainingSetCommand = new RelayCommand(x => AddToTrainingSet());
             NewPatternCommand = new RelayCommand(x => NewPattern());
-            SaveToFannCommand = new RelayCommand(x => SaveToFann());
+            SaveToFannCommand = new RelayCommand(x => {});
             SaveToXmlCommand = new RelayCommand(x => SaveToXml());
             LoadFromXmlCommand = new RelayCommand(x => LoadFromXml());
+        }
+
+        private void AddToTrainingSet()
+        {
+            if (string.IsNullOrEmpty(SaveAsName))
+            {
+                return;
+            }
+
+            var pattern = new Pattern
+            {
+                Name = SaveAsName,
+                Rows = 15,
+                Columns = 10
+            };
+
+            // 0 - black, 1 - white
+            pattern.FillUsing(Pixels.Cast<double>().Select(x => x < 0.5).ToArray());
+            _patternContainer.Add(pattern);
         }
 
         private void NewPattern()
@@ -68,35 +111,6 @@ namespace DataEditor
             pattern.Name = $"#{_patternContainer.Patterns.Count()}";
 
             _patternContainer.Add(pattern);
-            CurrentLetter = pattern;
-        }
-
-        private void SaveToFann()
-        {
-            var previous = _patternContainer.Patterns.First();
-            foreach (var letter in _patternContainer.Patterns.Skip(1))
-            {
-                if (previous.Rows != letter.Rows || previous.Columns != letter.Columns)
-                {
-                    MessageBox.Show(
-                        $"Rozmiary matryc {letter.Name} i {previous.Name} nie są zgodne.", "Błąd",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-            }
-
-            var dialog = new SaveFileDialog
-            {
-                Filter = "Plik formatu FANN|*.*",
-                DefaultExt = "txt",
-                AddExtension = true
-            };
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            _patternContainer.SaveToFann(dialog.FileName);
         }
 
         private void SaveToXml()
@@ -130,7 +144,6 @@ namespace DataEditor
             }
 
             _patternContainer.LoadFromXml(dialog.FileName);
-            CurrentLetter = _patternContainer.Patterns.FirstOrDefault();
         }
     }
 }
