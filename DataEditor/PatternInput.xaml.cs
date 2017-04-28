@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -137,7 +138,7 @@ namespace DataEditor
             BitmapData data = null;
             try
             {
-                data = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                data = source.LockBits(new Rectangle(0, 0, source.Width, source.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 byte[] buffer = new byte[data.Height * data.Stride];
                 Marshal.Copy(data.Scan0, buffer, 0, buffer.Length);
                 int xMin = int.MaxValue;
@@ -148,8 +149,11 @@ namespace DataEditor
                 {
                     for (int x = 0; x < data.Width; x++)
                     {
-                        byte alpha = buffer[y * data.Stride + 4 * x + 3];
-                        if (alpha != 0)
+                        byte a = buffer[y * data.Stride + 4 * x + 3];
+                        byte r = buffer[y * data.Stride + 4 * x + 2];
+                        byte g = buffer[y * data.Stride + 4 * x + 1];
+                        byte b = buffer[y * data.Stride + 4 * x + 0];
+                        if (a != 0 || (r==255&&b==255&&g==255))
                         {
                             if (x < xMin) xMin = x;
                             if (x > xMax) xMax = x;
@@ -197,7 +201,21 @@ namespace DataEditor
         private void InkCanvas_OnStrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs args)
         {
             var pixels = new double[Rows, Columns];
+
+            //            var renderTargetBitmap = CreateSaveBitmap(InkCanvas);
+            //            var orgBitmap = TrimBitmap(BitmapImage2Bitmap(BitmapSourceToBitmapImage(renderTargetBitmap)));
+            //
+            //            var resized = new Bitmap(Columns, Rows);
+            //            using (var g = Graphics.FromImage(resized))
+            //            {
+            //                g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            //                g.SmoothingMode = SmoothingMode.None;
+            //                g.DrawImage(orgBitmap, new Rectangle(0, 0, Columns, Rows));
+            //            }
+            //            resized.Save(@"F:\aaa.bmp");
+
             var resized = BitmapImage2Bitmap(RenderControl(InkCanvas, Columns, Rows));
+
             for (int i = 0; i < Rows; ++i)
             {
                 for (int j = 0; j < Columns; ++j)

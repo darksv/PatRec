@@ -9,7 +9,7 @@
     <Border HorizontalAlignment="Center" VerticalAlignment="Center">
         <InkCanvas x:Name="InkCanvas" Width="200" Height="300" StrokeCollected="InkCanvas_OnStrokeCollected">
             <InkCanvas.DefaultDrawingAttributes>
-                <DrawingAttributes Width="30" Height="30" />
+                <DrawingAttributes Width="20" Height="20" />
             </InkCanvas.DefaultDrawingAttributes>
         </InkCanvas>
     </Border>

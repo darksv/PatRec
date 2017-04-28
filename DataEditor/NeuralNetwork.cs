@@ -85,14 +85,14 @@ namespace DataEditor
         }
         
         private uint _numberOfInputs = 55;
-        private uint[] _hiddenLayers = { 125 };
+        private uint[] _hiddenLayers = { 110 };
         private uint _numberOfOutputs = 35;
-        private float _learningRate = 0.25f;
-        private double _activationSteepnessHidden = 1.0;
-        private double _activationSteepnessOutput = 2.0;
+        private float _learningRate = 0.35f;
+        private double _activationSteepnessHidden = 0.5;
+        private double _activationSteepnessOutput = 1.0;
         private ActivationFunction _activationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
         private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID_SYMMETRIC;
-        private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_INCREMENTAL;
+        private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_RPROP;
         
         public uint NumberOfInputs
         {

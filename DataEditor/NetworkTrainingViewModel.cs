@@ -114,7 +114,7 @@ namespace DataEditor
                 token.ThrowIfCancellationRequested();
             });
 
-            Log += $"{_network.Test(testFile)}";
+            Log += $"[{DateTime.Now}] {_network.Test(testFile)}\n";
 
 //            var patterns = _patternContainer.Patterns.ToArray();
 //            for (int i = 0; i < patterns.Length; ++i)
