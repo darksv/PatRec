@@ -24,49 +24,54 @@ namespace DataEditor
                 return;
             }
 
-            var groups = _patterns
-                .GroupBy(pattern => pattern.Name)
+            var numberOfSamples = _patterns.Count;
+            var numberOfTrainSamples = (int)(numberOfSamples * 0.8f);
+            var numberOfTestSamples = numberOfSamples - numberOfTrainSamples;
+
+            var patterns = _patterns
+                .OrderBy(x => Guid.NewGuid())
                 .ToArray();
 
-            var numberOfAllSamples = _patterns.Count;
+            var trainSamples = patterns.Take(numberOfTrainSamples).ToArray();
+            var testSamples = patterns.Skip(numberOfTrainSamples).Take(numberOfTestSamples).ToArray();
 
-            var minCount = groups.Min(x => x.Count());
-            var numberOfTrainSamples = groups.Length * minCount;
-            var numberOfTestSamples = numberOfAllSamples - numberOfTrainSamples;
-
+            var groups = _patterns
+                .Select(pattern => pattern.Name)
+                .Distinct()
+                .OrderBy(name => name)
+                .Select((name, index) => new {Name = name, Index = index})
+                .ToDictionary(item => item.Name, item => item.Index);
+            
             var inputs = _patterns[0].Pixels.Length;
-            var outputs = groups.Length;
+            var outputs = groups.Count;
 
             using (var f = new StreamWriter(trainFileName))
-            using (var g = new StreamWriter(testFileName))
             {
                 f.WriteLine($"{numberOfTrainSamples} {inputs} {outputs}");
-                g.WriteLine($"{numberOfTestSamples} {inputs} {outputs}");
-
-                for (int i = 0; i < groups.Length; ++i)
+                
+                foreach (var pattern in trainSamples)
                 {
-                    var trainSamples = groups[i].OrderBy(x => Guid.NewGuid()).Take(minCount);
-                    var testSamples = groups[i].OrderBy(x => Guid.NewGuid()).Skip(minCount);
+                    f.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
 
-                    foreach (var pattern in trainSamples)
-                    {
-                        f.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
+                    var output = Enumerable.Repeat(-1.0, outputs).ToArray();
+                    output[groups[pattern.Name]] = 1.0;
 
-                        var output = Enumerable.Repeat(-1.0, groups.Length).ToArray();
-                        output[i] = 1.0;
+                    f.WriteLine(string.Join(" ", output));
+                }
+            }
 
-                        f.WriteLine(string.Join(" ", output));
-                    }
+            using (var f = new StreamWriter(testFileName))
+            {
+                f.WriteLine($"{numberOfTestSamples} {inputs} {outputs}");
 
-                    foreach (var pattern in testSamples)
-                    {
-                        g.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
+                foreach (var pattern in testSamples)
+                {
+                    f.WriteLine(string.Join(" ", pattern.ToVector(-1.0, 1.0)));
 
-                        var output = Enumerable.Repeat(-1.0, groups.Length).ToArray();
-                        output[i] = 1.0;
+                    var output = Enumerable.Repeat(-1.0, outputs).ToArray();
+                    output[groups[pattern.Name]] = 1.0;
 
-                        g.WriteLine(string.Join(" ", output));
-                    }
+                    f.WriteLine(string.Join(" ", output));
                 }
             }
         }

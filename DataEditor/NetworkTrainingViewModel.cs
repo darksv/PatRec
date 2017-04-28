@@ -24,9 +24,9 @@ namespace DataEditor
 
         public bool CanCancelTraining { get; private set; } = false;
 
-        public float LearningRate { get; set; } = 0.7f;
+        public float LearningRate { get; set; } = 0.35f;
 
-        public float DesiredError { get; set; } = 0.005f;
+        public float DesiredError { get; set; } = 0.0025f;
 
         public uint MaxIterations { get; set; } = 1000;
 
@@ -95,6 +95,12 @@ namespace DataEditor
         {
             _dispatcher.Invoke(() => Epochs.Clear());
 
+            if (!_patternContainer.Patterns.Any())
+            {
+                MessageBox.Show("Brak danych do uczenia!");
+                return;
+            }
+
             string trainFile = $@"{DateTime.Now:yyyyMMddHHmmss}.train";
             string testFile = $@"{DateTime.Now:yyyyMMddHHmmss}.test";
             _patternContainer.SaveToFann(trainFile, testFile);
@@ -114,20 +120,7 @@ namespace DataEditor
                 token.ThrowIfCancellationRequested();
             });
 
-            Log += $"[{DateTime.Now}] {_network.Test(testFile)}\n";
-
-//            var patterns = _patternContainer.Patterns.ToArray();
-//            for (int i = 0; i < patterns.Length; ++i)
-//            {
-//                var input = patterns[i].ToVector(-1.0, 1.0);
-//                var desiredOutput = Enumerable.Repeat(-1.0, patterns.Length).ToArray();
-//                desiredOutput[i] = 1.0;
-//
-//                var calculatedOutput = _network.Run(input);
-//                var difference = calculatedOutput.Zip(desiredOutput, (calculated, desired) => calculated - desired);
-//
-//                Log += $"{patterns[i].Name} -> ({FormatArray(calculatedOutput)}), should be ({FormatArray(desiredOutput)}), differences = ({FormatArray(difference)})\n";
-//            }
+            Log += $"[{DateTime.Now}] Błąd zbioru testowego: {_network.Test(testFile)}\n";
         }
 
         private void CancelTraining()
