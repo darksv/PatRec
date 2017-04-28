@@ -28,14 +28,14 @@
                 <ItemsControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding PatternGroups}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <StackPanel />
+                            <WrapPanel />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Padding="1.5" />
-                                <TextBlock FontWeight="Normal" Text="{Binding NumberOfSamples}" Padding="1.5" />
+                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Padding="1.5" Width="25" />
+                                <TextBlock FontWeight="Normal" Text="{Binding NumberOfSamples}" Padding="1.5" Width="25" />
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -175,7 +175,7 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="160" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -183,9 +183,10 @@
                 </Grid.RowDefinitions>
                 <local:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" PatternChanged="PixelDrawer_OnPatternChanged" Rows="15" Columns="10"/>
                 <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Content="Czyść" Click="ButtonBase_OnClick" />
-                
-                <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Horizontal" Margin="0,0,10,0">
-                    <StackPanel.Resources>
+
+
+                <ItemsControl ItemsSource="{Binding Predictions}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                    <ItemsControl.Resources>
                         <Style x:Key="ValueStyle" TargetType="TextBlock">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsHighest}" Value="False">
@@ -193,32 +194,21 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </StackPanel.Resources>
-                    <ItemsControl ItemsSource="{Binding Predictions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Name}" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <ItemsControl ItemsSource="{Binding Predictions}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Vertical" VerticalAlignment="Center" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Value, StringFormat={}{0:0.00000}}" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="0,0,10,0" VerticalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="2.5">
+                                <TextBlock Width="15" Text="{Binding Name}" Style="{StaticResource ValueStyle}" TextAlignment="Center" FontWeight="Bold" />
+                                <TextBlock Width="55" Text="{Binding Value, StringFormat={}{0:0.00000}}" TextAlignment="Right" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
         </TabItem>
     </TabControl>

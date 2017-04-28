@@ -85,7 +85,7 @@ namespace DataEditor
         }
         
         private uint _numberOfInputs = 55;
-        private uint[] _hiddenLayers = { 110 };
+        private uint[] _hiddenLayers = { 150 };
         private uint _numberOfOutputs = 35;
         private float _learningRate = 0.35f;
         private double _activationSteepnessHidden = 0.5;
