@@ -17,6 +17,8 @@ namespace DataEditor
             PredictCommand = new RelayCommand(x => Predict());
         }
 
+        public NeuralNetwork Network => _network;
+
         public double[,] Pixels { get; set; }
 
         public Prediction[] Predictions { get; private set; }

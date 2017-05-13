@@ -21,11 +21,11 @@ namespace DataEditor
                     foreach (NetworkLayer layer in args.NewItems)
                     {
                         layer.PropertyChanged +=
-                            (a, b) => _network = null;
+                            (a, b) => DestroyNetwork();
                     }
                 }
 
-                _network = null;
+                DestroyNetwork();
             };
         }
 
@@ -83,6 +83,8 @@ namespace DataEditor
 
                 _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
             }
+
+            IsTrained = true;
         }
 
         public float Test(string filePath)
@@ -102,7 +104,13 @@ namespace DataEditor
                 RebuildNetwork();
             }
         }
-        
+
+        private void DestroyNetwork()
+        {
+            _network = null;
+            IsTrained = false;
+        }
+
         private uint _numberOfInputs = 55;
         private uint _numberOfOutputs = 35;
         private float _learningRate = 0.35f;
@@ -114,7 +122,7 @@ namespace DataEditor
         
         public uint NumberOfInputs
         {
-            get { return _numberOfInputs; }
+            get => _numberOfInputs;
             set
             {
                 if (_numberOfOutputs == value)
@@ -123,7 +131,7 @@ namespace DataEditor
                 }
 
                 _numberOfInputs = value;
-                _network = null;
+                DestroyNetwork();
             }
         }
 
@@ -134,7 +142,7 @@ namespace DataEditor
 
         public uint NumberOfOutputs
         {
-            get { return _numberOfOutputs; }
+            private get { return _numberOfOutputs; }
             set
             {
                 if (_numberOfOutputs == value)
@@ -142,13 +150,13 @@ namespace DataEditor
                     return;
                 }
                 _numberOfOutputs = value;
-                _network = null;
+                DestroyNetwork();
             }
         }
 
         public float LearningRate
         {
-            get { return _learningRate; }
+            get => _learningRate;
             set
             {
                 _learningRate = value;
@@ -162,7 +170,7 @@ namespace DataEditor
 
         public double ActivationSteepnessHidden
         {
-            get { return _activationSteepnessHidden; }
+            get => _activationSteepnessHidden;
             set
             {
                 _activationSteepnessHidden = value;
@@ -176,7 +184,7 @@ namespace DataEditor
 
         public double ActivationSteepnessOutput
         {
-            get { return _activationSteepnessOutput; }
+            get => _activationSteepnessOutput;
             set
             {
                 _activationSteepnessOutput = value;
@@ -190,7 +198,7 @@ namespace DataEditor
 
         public ActivationFunction ActivationFunctionHidden
         {
-            get { return _activationFunctionHidden; }
+            get => _activationFunctionHidden;
             set
             {
                 _activationFunctionHidden = value;
@@ -204,7 +212,7 @@ namespace DataEditor
 
         public ActivationFunction ActivationFunctionOutput
         {
-            get { return _activationFunctionOutput; }
+            get => _activationFunctionOutput;
             set
             {
                 _activationFunctionOutput = value;
@@ -218,7 +226,7 @@ namespace DataEditor
 
         public TrainingAlgorithm TrainingAlgorithm
         {
-            get { return _trainingAlgorithm; }
+            get => _trainingAlgorithm;
             set
             {
                 _trainingAlgorithm = value;
@@ -229,6 +237,8 @@ namespace DataEditor
                 }
             }
         }
+
+        public bool IsTrained { get; private set; }
 
         private NeuralNet _network;
     }

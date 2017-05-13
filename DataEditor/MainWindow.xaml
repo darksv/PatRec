@@ -209,6 +209,20 @@
                 <local:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" PatternChanged="PixelDrawer_OnPatternChanged" Rows="15" Columns="10"/>
                 <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Content="Czyść" Click="ButtonBase_OnClick" />
 
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Foreground="#C00000" FontWeight="Bold" VerticalAlignment="Top" Text="Uwaga! Sieć nie została wytrenowana!" HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Network.IsTrained}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Network.IsTrained}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
 
                 <ItemsControl ItemsSource="{Binding Predictions}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
                     <ItemsControl.Resources>
