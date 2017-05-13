@@ -88,8 +88,33 @@
                 <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
                 <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Neurony w warstwie ukrytej:" />
-                <xctk:IntegerUpDown Grid.Row="5" Grid.Column="1" Value="{Binding Network.HiddenLayer}" />
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Warstwy ukryte:" />
+                <Grid Grid.Row="5" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Network.HiddenLayers}" x:Name="Layers">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid VerticalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" Width="24" Height="24" Margin="0,1.25" Command="{Binding DataContext.RemoveLayerCommand, ElementName=Layers}" CommandParameter="{Binding}">
+                                        <Image Source="Resources/Images/1494689794_icon-minus-round.png" />
+                                    </Button>
+                                    <xctk:IntegerUpDown Grid.Column="1" Value="{Binding NumberOfNeurons}" Margin="1.25,1.25,0,1.25" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Grid.Column="1" Grid.Row="0" Command="{Binding AddLayerCommand}" Margin="2.5,0,0,1.25" Padding="2.5" Width="24" Height="24" VerticalContentAlignment="Center" VerticalAlignment="Bottom">
+                        <Image Source="Resources/Images/1494689797_icon-plus-round.png"></Image>
+                    </Button>
+                </Grid>
             </Grid>
         </TabItem>
         <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkTraining}">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Input;
 using FANNCSharp;
 using PropertyChanged;
 
@@ -16,7 +17,17 @@ namespace DataEditor
 
         public NeuralNetwork Network { get; private set; }
 
-	    public NetworkEditorViewModel(NeuralNetwork network)
+        public ICommand AddLayerCommand => new RelayCommand(x =>
+        {
+            Network.HiddenLayers.Add(new NetworkLayer(Network.NumberOfInputs));
+        });
+
+	    public ICommand RemoveLayerCommand => new RelayCommand(x =>
+	    {
+	        Network.HiddenLayers.Remove((NetworkLayer) x);
+	    });
+
+        public NetworkEditorViewModel(NeuralNetwork network)
 	    {
 	        Network = network;
 	    }

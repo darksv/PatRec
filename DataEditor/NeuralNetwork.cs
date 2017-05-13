@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using FANNCSharp;
 using FANNCSharp.Double;
@@ -10,6 +12,23 @@ namespace DataEditor
     [ImplementPropertyChanged]
     public class NeuralNetwork
     {
+        public NeuralNetwork()
+        {
+            HiddenLayers.CollectionChanged += (sender, args) =>
+            {
+                if (args.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (NetworkLayer layer in args.NewItems)
+                    {
+                        layer.PropertyChanged +=
+                            (a, b) => _network = null;
+                    }
+                }
+
+                _network = null;
+            };
+        }
+
         private void RebuildNetwork()
         {
             var layers = MakeLayers().ToArray();
@@ -31,9 +50,9 @@ namespace DataEditor
         private IEnumerable<uint> MakeLayers()
         {
             yield return NumberOfInputs;
-            foreach (var hiddenLayer in _hiddenLayers)
+            foreach (var hiddenLayer in HiddenLayers)
             {
-                yield return hiddenLayer;
+                yield return hiddenLayer.NumberOfNeurons;
             }
             yield return NumberOfOutputs;
         }
@@ -85,7 +104,6 @@ namespace DataEditor
         }
         
         private uint _numberOfInputs = 55;
-        private uint[] _hiddenLayers = { 150 };
         private uint _numberOfOutputs = 35;
         private float _learningRate = 0.35f;
         private double _activationSteepnessHidden = 0.5;
@@ -109,6 +127,11 @@ namespace DataEditor
             }
         }
 
+        public ObservableCollection<NetworkLayer> HiddenLayers { get; } = new ObservableCollection<NetworkLayer>
+        {
+            new NetworkLayer(400)
+        };
+
         public uint NumberOfOutputs
         {
             get { return _numberOfOutputs; }
@@ -119,21 +142,6 @@ namespace DataEditor
                     return;
                 }
                 _numberOfOutputs = value;
-                _network = null;
-            }
-        }
-
-        public uint HiddenLayer
-        {
-            get { return _hiddenLayers[0]; }
-            set
-            {
-                if (_hiddenLayers[0] == value)
-                {
-                    return;
-                }
-
-                _hiddenLayers[0] = value;
                 _network = null;
             }
         }
@@ -221,7 +229,7 @@ namespace DataEditor
                 }
             }
         }
-        
+
         private NeuralNet _network;
     }
 }

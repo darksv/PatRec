@@ -95,6 +95,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AsyncRelayCommand.cs" />
+    <Compile Include="NetworkLayer.cs" />
     <Compile Include="NetworkTrainingViewModel.cs" />
     <Compile Include="NetworkTestingViewModel.cs" />
     <Compile Include="NeuralNetwork.cs" />
@@ -173,6 +174,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NetworkEditorViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\1494689794_icon-minus-round.png" />
+    <Resource Include="Resources\Images\1494689797_icon-plus-round.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.2\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.2\build\dotnet\Fody.targets')" />
