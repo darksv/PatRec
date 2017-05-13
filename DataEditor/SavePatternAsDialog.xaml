@@ -7,8 +7,12 @@
         mc:Ignorable="d"
         Title="Zapisywanie wzorca"
         Width="400" SizeToContent="Height"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="ToolWindow">
     <Grid x:Name="LayoutRoot" d:DataContext="{d:DesignInstance {x:Type local:SavePatternAsDialog}}">
+        <Grid.InputBindings>
+            <KeyBinding Key="Escape" Command="{Binding CancelCommand}" />
+        </Grid.InputBindings>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -18,11 +22,11 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5" FocusManager.FocusedElement="{Binding ElementName=ResponseTextBox}">
-            <TextBlock Text="Przypisana litera:" FontSize="12" Padding="5,2.5"/>
-            <TextBox x:Name="ResponseTextBox" Text="{Binding ResponseText}" FontSize="16" Margin="5" GotKeyboardFocus="ResponseTextBox_OnGotKeyboardFocus"/>
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="2.5" FocusManager.FocusedElement="{Binding ElementName=ResponseTextBox}">
+            <TextBlock Text="Przypisywany znak:" FontSize="12" Padding="2.5,2.5"/>
+            <TextBox x:Name="ResponseTextBox" Text="{Binding ResponseText}" FontSize="16" Margin="2.5" Padding="0,2.5" GotKeyboardFocus="ResponseTextBox_OnGotKeyboardFocus"/>
         </StackPanel>
-        <Button Grid.Row="1" Grid.Column="0" Content="OK" Margin="5" Padding="5" Command="{Binding OkCommand}" />
-        <Button Grid.Row="1" Grid.Column="1" Content="Anuluj" Margin="5" Padding="5" Command="{Binding CancelCommand}" />
+        <Button Grid.Row="1" Grid.Column="0" Content="Dodaj" Margin="5,0,2.5,5" Padding="5" Command="{Binding OkCommand}" />
+        <Button Grid.Row="1" Grid.Column="1" Content="Anuluj" Margin="2.5,0,5,5" Padding="5" Command="{Binding CancelCommand}" />
     </Grid>
 </Window>
