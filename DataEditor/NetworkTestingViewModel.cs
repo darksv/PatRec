@@ -19,7 +19,7 @@ namespace DataEditor
             {
                 var dialog = new SavePatternAsDialog
                 {
-                    ResponseText = Predictions.FirstOrDefault(p => p.IsHighest)?.Name
+                    ResponseText = Predictions?.FirstOrDefault(p => p.IsHighest)?.Name ?? string.Empty
                 };
                 if (dialog.ShowDialog() != true)
                 {
