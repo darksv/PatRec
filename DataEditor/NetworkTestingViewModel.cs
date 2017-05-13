@@ -15,6 +15,28 @@ namespace DataEditor
             _network = network;
             _patternContainer = patternContainer;
             PredictCommand = new RelayCommand(x => Predict());
+            AddToTrainingSetCommand = new RelayCommand(x =>
+            {
+                var dialog = new SavePatternAsDialog
+                {
+                    ResponseText = Predictions.FirstOrDefault(p => p.IsHighest)?.Name
+                };
+                if (dialog.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                var pattern = new Pattern
+                {
+                    Name = dialog.ResponseText,
+                    Rows = 15,
+                    Columns = 10
+                };
+
+                // 0 - black, 1 - white
+                pattern.FillUsing(Pixels.Cast<double>().Select(p => p < 0.5).ToArray());
+                _patternContainer.Add(pattern);
+            });
         }
 
         public NeuralNetwork Network => _network;
@@ -24,6 +46,8 @@ namespace DataEditor
         public Prediction[] Predictions { get; private set; }
 
         public ICommand PredictCommand { get; }
+
+        public ICommand AddToTrainingSetCommand { get; }
 
         public void Predict()
         {

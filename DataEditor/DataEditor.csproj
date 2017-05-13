@@ -103,6 +103,9 @@
     <Compile Include="PatternEditorViewModel.cs" />
     <Compile Include="PatternInput.xaml.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="SavePatternAsDialog.xaml.cs">
+      <DependentUpon>SavePatternAsDialog.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,6 +125,10 @@
     <Page Include="PatternInput.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SavePatternAsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

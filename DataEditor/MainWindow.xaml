@@ -48,9 +48,9 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Grid.Column="1">
                         <TextBox Margin="2.5,5" Padding="10,5" Text="{Binding SaveAsName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Content="Dodaj do danych uczących" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern_OnClick"/>
+                        <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern_OnClick"/>
                         <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ClearPattern_OnClick" />
                     </StackPanel>
                 </Grid>
@@ -83,9 +83,9 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Funkcja aktywacji warstwy wyjściowej:" />
                 <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Stromość funkcji aktywacji warstw ukrytych:" />
-                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
+                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Stromość funkcji aktywacji warstwy wyjściowej:" />
-                <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.01######}" />
+                <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
                 <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
                 <TextBlock Grid.Row="5" Grid.Column="0" Text="Warstwy ukryte:" />
@@ -129,6 +129,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
@@ -160,7 +161,8 @@
                     <Button Grid.Column="1" Command="{Binding CancelTrainingCommand}" Content="Przerwij" IsEnabled="{Binding CanCancelTraining}" />
                 </Grid>
 
-                <charting:Chart Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0">
+                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding CurrentError, StringFormat={}Aktualny błąd: {0:0.00000}}" HorizontalAlignment="Center" Margin="0,5" />
+                <charting:Chart Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0">
                     <charting:Chart.Axes>
                         <charting:LinearAxis Orientation="X" Title="Iteracje" />
                         <charting:LinearAxis Orientation="Y" Title="Błąd" />
@@ -192,7 +194,7 @@
                     </charting:LineSeries>
                 </charting:Chart>
 
-                <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" />
+                <TextBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" />
             </Grid>
         </TabItem>
 
@@ -207,8 +209,12 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <local:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" PatternChanged="PixelDrawer_OnPatternChanged" Rows="15" Columns="10"/>
-                <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Content="Czyść" Click="ButtonBase_OnClick" />
 
+                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center">
+                    <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ClearPattern_OnClick" />
+                    <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern_OnClick"/>
+                </StackPanel>
+                
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Foreground="#C00000" FontWeight="Bold" VerticalAlignment="Top" Text="Uwaga! Sieć nie została wytrenowana!" HorizontalAlignment="Center">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">

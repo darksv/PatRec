@@ -14,19 +14,26 @@ namespace DataEditor
     {
         public NeuralNetwork()
         {
+            SubscribeLayers(HiddenLayers);
+
             HiddenLayers.CollectionChanged += (sender, args) =>
             {
                 if (args.Action == NotifyCollectionChangedAction.Add)
                 {
-                    foreach (NetworkLayer layer in args.NewItems)
-                    {
-                        layer.PropertyChanged +=
-                            (a, b) => DestroyNetwork();
-                    }
+                    SubscribeLayers(args.NewItems.Cast<NetworkLayer>());
                 }
 
                 DestroyNetwork();
             };
+        }
+
+        private void SubscribeLayers(IEnumerable<NetworkLayer> layers)
+        {
+            foreach (var layer in layers)
+            {
+                layer.PropertyChanged +=
+                    (sender, args) => DestroyNetwork();
+            }
         }
 
         private void RebuildNetwork()

@@ -49,6 +49,7 @@ namespace DataEditor
         }
 
         public ObservableCollection<EpochInfo> Epochs { get; } = new ObservableCollection<EpochInfo>();
+        public double CurrentError { get; private set; }
 
         public class EpochInfo
         {
@@ -111,11 +112,16 @@ namespace DataEditor
             _network.LearningRate = LearningRate;
             _network.Train(trainFile, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
             {
-                _dispatcher.Invoke(() => Epochs.Add(new EpochInfo
+                _dispatcher.Invoke(() =>
                 {
-                    Number = epochs,
-                    Error = cost,
-                }));
+                    Epochs.Add(new EpochInfo
+                    {
+                        Number = epochs,
+                        Error = cost,
+                    });
+
+                    CurrentError = cost;
+                });
 
                 token.ThrowIfCancellationRequested();
             });
