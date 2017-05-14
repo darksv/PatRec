@@ -3,256 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DataEditor"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:charting="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-        xmlns:visualisation="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
-        xmlns:controls="clr-namespace:DataEditor.Controls"
         xmlns:viewModels="clr-namespace:DataEditor.ViewModels"
+        xmlns:views="clr-namespace:DataEditor.Views"
         mc:Ignorable="d"
-        Title="Rozpoznawanie wzorców" Height="600" Width="600" WindowStartupLocation="CenterScreen" d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}">
+        Title="Rozpoznawanie wzorców" 
+        Height="600"
+        Width="600" 
+        WindowStartupLocation="CenterScreen" 
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}">
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding PatternEditor.LoadFromXmlCommand}" />
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding PatternEditor.SaveToXmlCommand}" />
     </Window.InputBindings>
     <TabControl>
         <TabItem Header="Dane" DataContext="{Binding PatternEditor}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <ItemsControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding PatternGroups}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Padding="1.5" Width="25" />
-                                <TextBlock FontWeight="Normal" Text="{Binding NumberOfSamples}" Padding="1.5" Width="25" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                
-                <controls:PatternInput Grid.Row="1" Grid.Column="1" x:Name="PatternInput" Pixels="{Binding Pixels, Mode=OneWayToSource}" Rows="15" Columns="10" />
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Column="1">
-                        <TextBox Margin="2.5,5" Padding="10,5" Text="{Binding SaveAsName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
-                        <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern_OnClick"/>
-                        <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ClearPattern_OnClick" />
-                    </StackPanel>
-                </Grid>
-            </Grid>
+            <views:PatternEditor />
         </TabItem>
         <TabItem Header="Edycja sieci" DataContext="{Binding NetworkEditor}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.Resources>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Padding" Value="2.5" />
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                    </Style>
-                </Grid.Resources>
-                
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Funkcja aktywacji warstw ukrytych:" />
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" IsEditable="{Binding Network}" />
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Funkcja aktywacji warstwy wyjściowej:" />
-                <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Stromość funkcji aktywacji warstw ukrytych:" />
-                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Stromość funkcji aktywacji warstwy wyjściowej:" />
-                <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
-                <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
-                <TextBlock Grid.Row="5" Grid.Column="0" Text="Warstwy ukryte:" />
-                <Grid Grid.Row="5" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <ItemsControl Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Network.HiddenLayers}" x:Name="Layers">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Width="24" Height="24" Margin="0,1.25" Command="{Binding DataContext.RemoveLayerCommand, ElementName=Layers}" CommandParameter="{Binding}">
-                                        <Image Source="/Resources/Images/1494689794_icon-minus-round.png" />
-                                    </Button>
-                                    <xctk:IntegerUpDown Grid.Column="1" Value="{Binding NumberOfNeurons}" Margin="1.25,1.25,0,1.25" />
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button Grid.Column="1" Grid.Row="0" Command="{Binding AddLayerCommand}" Margin="2.5,0,0,1.25" Padding="2.5" Width="24" Height="24" VerticalContentAlignment="Center" VerticalAlignment="Bottom">
-                        <Image Source="/Resources/Images/1494689797_icon-plus-round.png" />
-                    </Button>
-                </Grid>
-            </Grid>
+            <views:NetworkEditor />
         </TabItem>
         <TabItem Header="Uczenie sieci" DataContext="{Binding NetworkTraining}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Label Grid.Row="0" Grid.Column="0">Szybkość uczenia:</Label>
-                <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LearningRate}" />
-
-                <Label Grid.Row="1" Grid.Column="0">Maksymalna ilość iteracji:</Label>
-                <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MaxIterations}" />
-
-                <Label Grid.Row="2" Grid.Column="0">Błąd:</Label>
-                <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DesiredError}" />
-
-                <Label Grid.Row="3" Grid.Column="0">Iteracje pomiędzy raportami:</Label>
-                <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding IterationsBetweenReports}" />
-
-                <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.Resources>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Margin" Value="5,10" />
-                            <Setter Property="Padding" Value="10,5" />
-                        </Style>
-                    </Grid.Resources>
-                    <Button Grid.Column="0" Command="{Binding StartTrainingCommand}" Content="Rozpocznij" IsEnabled="{Binding CanStartTraining}" />
-                    <Button Grid.Column="1" Command="{Binding CancelTrainingCommand}" Content="Przerwij" IsEnabled="{Binding CanCancelTraining}" />
-                </Grid>
-
-                <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding CurrentError, StringFormat={}Aktualny błąd: {0:0.00000}}" HorizontalAlignment="Center" Margin="0,5" />
-                <charting:Chart Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0">
-                    <charting:Chart.Axes>
-                        <charting:LinearAxis Orientation="X" Title="Iteracje" />
-                        <charting:LinearAxis Orientation="Y" Title="Błąd" />
-                    </charting:Chart.Axes>
-                    <charting:Chart.LegendStyle>
-                        <Style TargetType="visualisation:Legend">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="Height" Value="0" />
-                            <Setter Property="Width" Value="0" />
-                        </Style>
-                    </charting:Chart.LegendStyle>
-                    <charting:Chart.PlotAreaStyle>
-                        <Style TargetType="Grid">
-                            <Setter Property="Background" Value="Transparent" />
-                        </Style>
-                    </charting:Chart.PlotAreaStyle>
-                    <charting:Chart.TitleStyle>
-                        <Style TargetType="visualisation:Title">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                        </Style>
-                    </charting:Chart.TitleStyle>
-                    <charting:LineSeries DependentValuePath="Error" IndependentValuePath="Number" ItemsSource="{Binding Epochs}" IsSelectionEnabled="False" BorderBrush="Black">
-                        <charting:LineSeries.DataPointStyle>
-                            <Style TargetType="charting:LineDataPoint">
-                                <Setter Property="Template" Value="{x:Null}" />
-                                <Setter Property="Background" Value="Gray" />
-                            </Style>
-                        </charting:LineSeries.DataPointStyle>
-                    </charting:LineSeries>
-                </charting:Chart>
-
-                <TextBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" />
-            </Grid>
+            <views:NetworkTrainer />
         </TabItem>
         <TabItem Header="Rozpoznawanie" DataContext="{Binding NetworkTesting}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="160" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <controls:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" PatternChanged="PixelDrawer_OnPatternChanged" Rows="15" Columns="10"/>
-
-                <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center">
-                    <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ButtonBase_OnClick" />
-                    <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}"/>
-                </StackPanel>
-                
-                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Foreground="#C00000" FontWeight="Bold" VerticalAlignment="Top" Text="Uwaga! Sieć nie została wytrenowana!" HorizontalAlignment="Center">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Network.Status}" Value="Ready">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-
-                <ItemsControl ItemsSource="{Binding Predictions}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-                    <ItemsControl.Resources>
-                        <Style x:Key="ValueStyle" TargetType="TextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsHighest}" Value="False">
-                                    <Setter Property="Foreground" Value="LightGray" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ItemsControl.Resources>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Margin="0,0,10,0" VerticalAlignment="Center" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="2.5">
-                                <TextBlock Width="15" Text="{Binding Name}" Style="{StaticResource ValueStyle}" TextAlignment="Center" FontWeight="Bold" />
-                                <TextBlock Width="55" Text="{Binding Value, StringFormat={}{0:0.00000}}" TextAlignment="Right" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
+            <views:NetworkTester />
         </TabItem>
     </TabControl>
 </Window>

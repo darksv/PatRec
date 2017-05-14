@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="DataEditor.Views.NetworkTester"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:DataEditor.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:viewModels="clr-namespace:DataEditor.ViewModels"
+             mc:Ignorable="d" 
+             Background="White"
+             d:DataContext="{d:DesignInstance {x:Type viewModels:NetworkTestingViewModel}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="160" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <controls:PatternInput Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputPattern" Pixels="{Binding Pixels, Mode=OneWayToSource}" Rows="15" Columns="10">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PatternChanged">
+                    <i:InvokeCommandAction Command="{Binding PredictCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </controls:PatternInput>
+        <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" HorizontalAlignment="Center">
+            <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ButtonBase_OnClick" />
+            <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}"/>
+        </StackPanel>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10" Foreground="#C00000" FontWeight="Bold" VerticalAlignment="Top" Text="Uwaga! Sieć nie została wytrenowana!" HorizontalAlignment="Center">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Network.Status}" Value="Ready">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <ItemsControl ItemsSource="{Binding Predictions}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <ItemsControl.Resources>
+                <Style x:Key="ValueStyle" TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsHighest}" Value="False">
+                            <Setter Property="Foreground" Value="LightGray" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Resources>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Margin="0,0,10,0" VerticalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="2.5">
+                        <TextBlock Width="15" Text="{Binding Name}" Style="{StaticResource ValueStyle}" TextAlignment="Center" FontWeight="Bold" />
+                        <TextBlock Width="55" Text="{Binding Value, StringFormat={}{0:0.00000}}" TextAlignment="Right" Padding="2.5,0" Style="{StaticResource ValueStyle}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>

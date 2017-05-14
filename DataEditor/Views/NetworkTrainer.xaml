@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="DataEditor.Views.NetworkTrainer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+             xmlns:visualizationToolkit="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+             xmlns:viewModels="clr-namespace:DataEditor.ViewModels"
+             mc:Ignorable="d" 
+             Background="White"
+             d:DataContext="{d:DesignInstance {x:Type viewModels:NetworkTrainingViewModel}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0">Szybkość uczenia:</Label>
+        <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LearningRate}" />
+
+        <Label Grid.Row="1" Grid.Column="0">Maksymalna ilość iteracji:</Label>
+        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MaxIterations}" />
+
+        <Label Grid.Row="2" Grid.Column="0">Błąd:</Label>
+        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DesiredError}" />
+
+        <Label Grid.Row="3" Grid.Column="0">Iteracje pomiędzy raportami:</Label>
+        <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding IterationsBetweenReports}" />
+
+        <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="5,10" />
+                    <Setter Property="Padding" Value="10,5" />
+                </Style>
+            </Grid.Resources>
+            <Button Grid.Column="0" Command="{Binding StartTrainingCommand}" Content="Rozpocznij" IsEnabled="{Binding CanStartTraining}" />
+            <Button Grid.Column="1" Command="{Binding CancelTrainingCommand}" Content="Przerwij" IsEnabled="{Binding CanCancelTraining}" />
+        </Grid>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding CurrentError, StringFormat={}Aktualny błąd: {0:0.00000}}" HorizontalAlignment="Center" Margin="0,5" />
+        <chartingToolkit:Chart Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="0">
+            <chartingToolkit:Chart.Axes>
+                <chartingToolkit:LinearAxis Orientation="X" Title="Iteracje" />
+                <chartingToolkit:LinearAxis Orientation="Y" Title="Błąd" />
+            </chartingToolkit:Chart.Axes>
+            <chartingToolkit:Chart.LegendStyle>
+                <Style TargetType="visualizationToolkit:Legend">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Height" Value="0" />
+                    <Setter Property="Width" Value="0" />
+                </Style>
+            </chartingToolkit:Chart.LegendStyle>
+            <chartingToolkit:Chart.PlotAreaStyle>
+                <Style TargetType="Grid">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
+            </chartingToolkit:Chart.PlotAreaStyle>
+            <chartingToolkit:Chart.TitleStyle>
+                <Style TargetType="visualizationToolkit:Title">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+            </chartingToolkit:Chart.TitleStyle>
+            <chartingToolkit:LineSeries DependentValuePath="Error" IndependentValuePath="Number" ItemsSource="{Binding Epochs}" IsSelectionEnabled="False" BorderBrush="Black">
+                <chartingToolkit:LineSeries.DataPointStyle>
+                    <Style TargetType="chartingToolkit:LineDataPoint">
+                        <Setter Property="Template" Value="{x:Null}" />
+                        <Setter Property="Background" Value="Gray" />
+                    </Style>
+                </chartingToolkit:LineSeries.DataPointStyle>
+            </chartingToolkit:LineSeries>
+        </chartingToolkit:Chart>
+
+        <TextBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsReadOnly="True" Text="{Binding Log, Mode=OneWay}" FontFamily="Courier New" />
+    </Grid>
+</UserControl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

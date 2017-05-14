@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DataEditor.Network;
 using DataEditor.Utils;
@@ -16,7 +17,7 @@ namespace DataEditor.ViewModels
         {
             _network = network;
             _patternContainer = patternContainer;
-            PredictCommand = new RelayCommand(Predict);
+            PredictCommand = new AsyncRelayCommand(async () => await Task.Run(() => Predict()));
             AddToTrainingSetCommand = new RelayCommand(() =>
             {
                 var dialog = new Views.SavePatternAsDialog

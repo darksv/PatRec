@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="DataEditor.Views.PatternEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:DataEditor.Controls"
+             xmlns:viewModels="clr-namespace:DataEditor.ViewModels"
+             mc:Ignorable="d" 
+             Background="White"
+             d:DataContext="{d:DesignInstance {x:Type viewModels:PatternEditorViewModel}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <ItemsControl Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" ItemsSource="{Binding PatternGroups}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock FontWeight="Bold" Text="{Binding Name}" Padding="1.5" Width="25" />
+                        <TextBlock FontWeight="Normal" Text="{Binding NumberOfSamples}" Padding="1.5" Width="25" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <controls:PatternInput Grid.Row="1" Grid.Column="1" x:Name="PatternInput" Pixels="{Binding Pixels, Mode=OneWayToSource}" Rows="15" Columns="10" />
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <TextBox Margin="2.5,5" Padding="10,5" Text="{Binding SaveAsName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Content="Dodaj do bazy" Margin="2.5,5" Padding="10,5" Command="{Binding AddToTrainingSetCommand}" Click="ClearPattern"/>
+                <Button Content="Czyść" Margin="2.5,5" Padding="10,5" Click="ClearPattern" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>
