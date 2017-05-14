@@ -33,6 +33,8 @@ namespace DataEditor.ViewModels
 
         public uint IterationsBetweenReports { get; set; } = 100;
 
+        public double SetDivisionRatio { get; set; } = 0.7;
+
         public NeuralNetwork Network => _network;
 
         private CancellationTokenSource _cancellationTokenSource;
@@ -95,7 +97,7 @@ namespace DataEditor.ViewModels
 
             string trainFile = $@"{DateTime.Now:yyyyMMddHHmmss}.train";
             string testFile = $@"{DateTime.Now:yyyyMMddHHmmss}.test";
-            _patternContainer.SaveToFann(trainFile, testFile);
+            _patternContainer.SaveToFann(trainFile, testFile, SetDivisionRatio);
 
             _network.NumberOfInputs = (uint) _patternContainer.Patterns.First().Pixels.Length;
             _network.NumberOfOutputs = (uint) _patternContainer.Patterns.GroupBy(x => x.Name).Count();

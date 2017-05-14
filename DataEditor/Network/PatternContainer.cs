@@ -17,7 +17,7 @@ namespace DataEditor.Network
             Patterns = new ReadOnlyObservableCollection<Pattern>(_patterns);
         }
 
-        public void SaveToFann(string trainFileName, string testFileName)
+        public void SaveToFann(string trainFileName, string testFileName, double divisionRatio)
         {
             if (!_patterns.Any())
             {
@@ -25,7 +25,7 @@ namespace DataEditor.Network
             }
 
             var numberOfSamples = _patterns.Count;
-            var numberOfTrainSamples = (int)(numberOfSamples * 0.7f);
+            var numberOfTrainSamples = (int)(numberOfSamples * divisionRatio);
             var numberOfTestSamples = numberOfSamples - numberOfTrainSamples;
 
             var patterns = _patterns
