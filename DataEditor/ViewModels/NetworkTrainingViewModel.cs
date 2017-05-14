@@ -33,6 +33,8 @@ namespace DataEditor.ViewModels
 
         public uint IterationsBetweenReports { get; set; } = 100;
 
+        public NeuralNetwork Network => _network;
+
         private CancellationTokenSource _cancellationTokenSource;
 
         private readonly Dispatcher _dispatcher;

@@ -126,6 +126,8 @@ namespace DataEditor
             Status = NetworkStatus.NotTrained;
         }
 
+        public bool CanEdit => Status != NetworkStatus.OnTraining;
+
         public NetworkStatus Status { get; private set; }
 
         public uint NumberOfInputs { get; set; }

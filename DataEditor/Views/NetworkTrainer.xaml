@@ -27,16 +27,16 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0">Szybkość uczenia:</Label>
-        <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LearningRate}" />
+        <xctk:DecimalUpDown Grid.Row="0" Grid.Column="1" Value="{Binding LearningRate}" IsEnabled="{Binding Network.CanEdit}" />
 
         <Label Grid.Row="1" Grid.Column="0">Maksymalna ilość iteracji:</Label>
-        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MaxIterations}" />
+        <xctk:IntegerUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MaxIterations}" IsEnabled="{Binding Network.CanEdit}" />
 
         <Label Grid.Row="2" Grid.Column="0">Błąd:</Label>
-        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DesiredError}" />
+        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding DesiredError}" IsEnabled="{Binding Network.CanEdit}" />
 
         <Label Grid.Row="3" Grid.Column="0">Iteracje pomiędzy raportami:</Label>
-        <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding IterationsBetweenReports}" />
+        <xctk:IntegerUpDown Grid.Row="3" Grid.Column="1" Value="{Binding IterationsBetweenReports}" IsEnabled="{Binding Network.CanEdit}" />
 
         <Grid Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>

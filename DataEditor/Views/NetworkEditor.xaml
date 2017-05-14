@@ -30,15 +30,15 @@
         </Grid.Resources>
 
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Funkcja aktywacji warstw ukrytych:" />
-        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" IsEditable="{Binding Network}" />
+        <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" IsEnabled="{Binding Network.CanEdit}" />
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Funkcja aktywacji warstwy wyjściowej:" />
-        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" />
+        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" IsEnabled="{Binding Network.CanEdit}" />
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Stromość funkcji aktywacji warstw ukrytych:" />
-        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
+        <xctk:DecimalUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Network.ActivationSteepnessHidden}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" IsEnabled="{Binding Network.CanEdit}" />
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Stromość funkcji aktywacji warstwy wyjściowej:" />
-        <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" />
+        <xctk:DecimalUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Network.ActivationSteepnessOutput}" Increment="0.1" Minimum="0" FormatString="{}{0:0.00######}" IsEnabled="{Binding Network.CanEdit}" />
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Algorytm uczenia:" />
-        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" />
+        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding TrainingAlgorithms}" SelectedValue="{Binding Network.TrainingAlgorithm}" IsEnabled="{Binding Network.CanEdit}" />
         <TextBlock Grid.Row="5" Grid.Column="0" Text="Warstwy ukryte:" />
         <Grid Grid.Row="5" Grid.Column="1">
             <Grid.ColumnDefinitions>
@@ -54,15 +54,15 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Width="24" Height="24" Margin="0,1.25" Command="{Binding DataContext.RemoveLayerCommand, ElementName=Layers}" CommandParameter="{Binding}">
+                            <Button Grid.Column="0" Width="24" Height="24" Margin="0,1.25" Command="{Binding DataContext.RemoveLayerCommand, ElementName=Layers}" CommandParameter="{Binding}" IsEnabled="{Binding DataContext.Network.CanEdit, ElementName=Layers}">
                                 <Image Source="/Resources/Images/1494689794_icon-minus-round.png" />
                             </Button>
-                            <xctk:IntegerUpDown Grid.Column="1" Value="{Binding NumberOfNeurons}" Margin="1.25,1.25,0,1.25" />
+                            <xctk:IntegerUpDown Grid.Column="1" Value="{Binding NumberOfNeurons}" Margin="1.25,1.25,0,1.25" IsEnabled="{Binding DataContext.Network.CanEdit, ElementName=Layers}" />
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Grid.Column="1" Grid.Row="0" Command="{Binding AddLayerCommand}" Margin="2.5,0,0,1.25" Padding="2.5" Width="24" Height="24" VerticalContentAlignment="Center" VerticalAlignment="Bottom">
+            <Button Grid.Column="1" Grid.Row="0" Command="{Binding AddLayerCommand}" Margin="2.5,0,0,1.25" Padding="2.5" Width="24" Height="24" VerticalContentAlignment="Center" VerticalAlignment="Bottom" IsEnabled="{Binding DataContext.Network.CanEdit, ElementName=Layers}">
                 <Image Source="/Resources/Images/1494689797_icon-plus-round.png" />
             </Button>
         </Grid>
