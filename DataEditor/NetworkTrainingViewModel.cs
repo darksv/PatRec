@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System;x
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -78,18 +77,6 @@ namespace DataEditor
            
             CanStartTraining = true;
             CanCancelTraining = false;
-        }
-
-        private static string Format(double x)
-        {
-            return Math.Abs(x) < float.Epsilon
-                ? 0.ToString()
-                : x.ToString("0.0000");
-        }
-
-        private static string FormatArray(IEnumerable<double> arr)
-        {
-            return string.Join(", ", arr.Select(Format));
         }
 
         private void ExecuteTraining(CancellationToken token)
