@@ -2,7 +2,7 @@
 using System.Linq;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.Network
 {
     [ImplementPropertyChanged]
     public class Pattern

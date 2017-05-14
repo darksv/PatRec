@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Windows.Input;
+using DataEditor.Network;
+using DataEditor.Utils;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.ViewModels
 {
     [ImplementPropertyChanged]
     public class NetworkTestingViewModel
@@ -17,7 +19,7 @@ namespace DataEditor
             PredictCommand = new RelayCommand(Predict);
             AddToTrainingSetCommand = new RelayCommand(() =>
             {
-                var dialog = new SavePatternAsDialog
+                var dialog = new Views.SavePatternAsDialog
                 {
                     ResponseText = Predictions?.FirstOrDefault(p => p.IsHighest)?.Name ?? string.Empty
                 };

@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using DataEditor.Utils;
 
-namespace DataEditor
+namespace DataEditor.Views
 {
     public partial class SavePatternAsDialog : Window
     {

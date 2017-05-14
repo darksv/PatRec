@@ -1,6 +1,6 @@
 ﻿using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.Network
 {
     [ImplementPropertyChanged]
     public class Pixel

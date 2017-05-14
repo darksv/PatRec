@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace DataEditor
+namespace DataEditor.Utils
 {
     public class RelayCommand : ICommand
     {

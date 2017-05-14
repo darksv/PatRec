@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using DataEditor.Network;
+using DataEditor.Utils;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.ViewModels
 {
     [ImplementPropertyChanged]
     public class NetworkTrainingViewModel

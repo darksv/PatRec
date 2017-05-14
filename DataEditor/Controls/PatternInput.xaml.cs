@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -9,11 +8,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Bitmap = System.Drawing.Bitmap;
-using PixelFormat = System.Windows.Media.PixelFormat;
 using Size = System.Windows.Size;
 
 
-namespace DataEditor
+namespace DataEditor.Controls
 {
     public partial class PatternInput : UserControl
     {

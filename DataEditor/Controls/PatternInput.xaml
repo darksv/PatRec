@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="DataEditor.PatternInput"
+﻿<UserControl x:Class="DataEditor.Controls.PatternInput"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DataEditor"
+             xmlns:local="clr-namespace:DataEditor.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Background="Gray">
     <Border HorizontalAlignment="Center" VerticalAlignment="Center">

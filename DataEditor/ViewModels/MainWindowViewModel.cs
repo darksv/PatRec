@@ -1,7 +1,8 @@
 ﻿using System.Windows.Threading;
+using DataEditor.Network;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.ViewModels
 {
     [ImplementPropertyChanged]
     public class MainWindowViewModel

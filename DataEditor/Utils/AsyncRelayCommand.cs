@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace DataEditor
+namespace DataEditor.Utils
 {
     public class AsyncRelayCommand : ICommand
     {

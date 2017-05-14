@@ -3,10 +3,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
+using DataEditor.Network;
+using DataEditor.Utils;
 using Microsoft.Win32;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.ViewModels
 {
     [ImplementPropertyChanged]
     public class PatternEditorViewModel

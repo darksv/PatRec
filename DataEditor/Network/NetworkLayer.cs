@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.Network
 {
     [ImplementPropertyChanged]
     public class NetworkLayer : INotifyPropertyChanged
@@ -13,7 +13,7 @@ namespace DataEditor
             NumberOfNeurons = numberOfNeurons;
         }
 
-        protected virtual void OnPropertyChanged(string propertyName = null)
+        protected void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

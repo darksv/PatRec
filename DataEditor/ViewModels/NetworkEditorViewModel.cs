@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
+using DataEditor.Network;
+using DataEditor.Utils;
 using FANNCSharp;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.ViewModels
 {
 	[ImplementPropertyChanged]
     public class NetworkEditorViewModel

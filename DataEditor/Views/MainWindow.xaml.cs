@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using DataEditor.ViewModels;
 using PropertyChanged;
 
-namespace DataEditor
+namespace DataEditor.Views
 {
     [ImplementPropertyChanged]
     public partial class MainWindow : Window

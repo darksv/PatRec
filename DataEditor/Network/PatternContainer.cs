@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace DataEditor
+namespace DataEditor.Network
 {
     public class PatternContainer
     {

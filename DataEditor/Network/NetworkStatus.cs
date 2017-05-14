@@ -1,4 +1,4 @@
-﻿namespace DataEditor
+﻿namespace DataEditor.Network
 {
     public enum NetworkStatus
     {
