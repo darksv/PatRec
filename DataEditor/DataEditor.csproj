@@ -94,20 +94,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AsyncRelayCommand.cs" />
-    <Compile Include="NetworkLayer.cs" />
-    <Compile Include="NetworkStatus.cs" />
-    <Compile Include="NetworkTrainingViewModel.cs" />
-    <Compile Include="NetworkTestingViewModel.cs" />
-    <Compile Include="NeuralNetwork.cs" />
-    <Compile Include="PatternContainer.cs" />
-    <Compile Include="PatternEditorViewModel.cs" />
-    <Compile Include="PatternInput.xaml.cs" />
-    <Compile Include="RelayCommand.cs" />
-    <Compile Include="SavePatternAsDialog.xaml.cs">
+    <Compile Include="Network\Pixel.cs" />
+    <Compile Include="Utils\AsyncRelayCommand.cs" />
+    <Compile Include="Network\NetworkLayer.cs" />
+    <Compile Include="Network\NetworkStatus.cs" />
+    <Compile Include="ViewModels\NetworkTrainingViewModel.cs" />
+    <Compile Include="ViewModels\NetworkTestingViewModel.cs" />
+    <Compile Include="Network\NeuralNetwork.cs" />
+    <Compile Include="Network\PatternContainer.cs" />
+    <Compile Include="ViewModels\PatternEditorViewModel.cs" />
+    <Compile Include="Controls\PatternInput.xaml.cs" />
+    <Compile Include="Utils\RelayCommand.cs" />
+    <Compile Include="Views\SavePatternAsDialog.xaml.cs">
       <DependentUpon>SavePatternAsDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -115,30 +116,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PatternEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PatternInput.xaml">
+    <Page Include="Controls\PatternInput.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SavePatternAsDialog.xaml">
+    <Page Include="Views\SavePatternAsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pattern.cs" />
-    <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Pixel.cs" />
-    <Compile Include="PatternEditor.xaml.cs">
-      <DependentUpon>PatternEditor.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Network\Pattern.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -181,7 +174,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NetworkEditorViewModel.cs" />
+    <Compile Include="ViewModels\NetworkEditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\1494689794_icon-minus-round.png" />
