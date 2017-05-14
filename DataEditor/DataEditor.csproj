@@ -96,6 +96,7 @@
     </ApplicationDefinition>
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="NetworkLayer.cs" />
+    <Compile Include="NetworkStatus.cs" />
     <Compile Include="NetworkTrainingViewModel.cs" />
     <Compile Include="NetworkTestingViewModel.cs" />
     <Compile Include="NeuralNetwork.cs" />

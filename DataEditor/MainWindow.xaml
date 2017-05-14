@@ -79,7 +79,7 @@
                 </Grid.Resources>
                 
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Funkcja aktywacji warstw ukrytych:" />
-                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" />
+                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionHidden}" IsEditable="{Binding Network}" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Funkcja aktywacji warstwy wyjściowej:" />
                 <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ActivationFunctions}" SelectedValue="{Binding Network.ActivationFunctionOutput}" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Stromość funkcji aktywacji warstw ukrytych:" />
@@ -219,10 +219,7 @@
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Network.IsTrained}" Value="True">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding Network.IsTrained}" Value="False">
+                                <DataTrigger Binding="{Binding Network.Status}" Value="Ready">
                                     <Setter Property="Visibility" Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>

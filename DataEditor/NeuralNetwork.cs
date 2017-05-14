@@ -63,7 +63,7 @@ namespace DataEditor
             }
             yield return NumberOfOutputs;
         }
-        
+
         public double[] Run(double[] input)
         {
             CreateNetworkIfNeccessary();
@@ -75,6 +75,8 @@ namespace DataEditor
             Action<uint, float> costCallback)
         {
             CreateNetworkIfNeccessary();
+
+            Status = NetworkStatus.OnTraining;
 
             using (TrainingData data = new TrainingData(filePath))
             {
@@ -91,7 +93,7 @@ namespace DataEditor
                 _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
             }
 
-            IsTrained = true;
+            Status = NetworkStatus.Ready;
         }
 
         public float Test(string filePath)
@@ -115,7 +117,7 @@ namespace DataEditor
         private void DestroyNetwork()
         {
             _network = null;
-            IsTrained = false;
+            Status = NetworkStatus.NotTrained;
         }
 
         private uint _numberOfInputs = 55;
@@ -126,7 +128,9 @@ namespace DataEditor
         private ActivationFunction _activationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
         private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID_SYMMETRIC;
         private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_RPROP;
-        
+
+        public NetworkStatus Status { get; private set; }
+
         public uint NumberOfInputs
         {
             get => _numberOfInputs;
@@ -244,8 +248,6 @@ namespace DataEditor
                 }
             }
         }
-
-        public bool IsTrained { get; private set; }
 
         private NeuralNet _network;
     }
