@@ -25,7 +25,7 @@ namespace DataEditor.Network
             }
 
             var numberOfSamples = _patterns.Count;
-            var numberOfTrainSamples = (int)(numberOfSamples * 0.8f);
+            var numberOfTrainSamples = (int)(numberOfSamples * 0.7f);
             var numberOfTestSamples = numberOfSamples - numberOfTrainSamples;
 
             var patterns = _patterns
