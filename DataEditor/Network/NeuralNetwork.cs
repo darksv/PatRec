@@ -96,7 +96,16 @@ namespace DataEditor
                     return 0;
                 }, null);
                 _network.LearningRate = learningRate;
-                _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
+
+                try
+                {
+                    _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
+                }
+                catch (Exception)
+                {
+                    Status = NetworkStatus.NotTrained;
+                    throw;
+                }
             }
 
             Status = NetworkStatus.Ready;
