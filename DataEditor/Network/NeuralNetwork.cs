@@ -8,6 +8,8 @@ using FANNCSharp;
 using FANNCSharp.Double;
 using PropertyChanged;
 
+// ReSharper disable UnusedMember.Local
+
 namespace DataEditor
 {
     [ImplementPropertyChanged]
@@ -49,9 +51,7 @@ namespace DataEditor
                 ActivationFunctionHidden = ActivationFunctionHidden,
                 ActivationFunctionOutput = ActivationFunctionOutput,
 
-                TrainingAlgorithm = TrainingAlgorithm,
-
-                LearningRate = LearningRate
+                TrainingAlgorithm = TrainingAlgorithm
             };
         }
 
@@ -72,7 +72,12 @@ namespace DataEditor
             return _network.Run(input);
         }
 
-        public void Train(string filePath, uint maxIterations, uint iterationsBetweenReports, float desiredError,
+        public void Train(
+            string filePath, 
+            uint maxIterations, 
+            uint iterationsBetweenReports, 
+            float learningRate, 
+            float desiredError, 
             Action<uint, float> costCallback)
         {
             CreateNetworkIfNeccessary();
@@ -90,7 +95,7 @@ namespace DataEditor
 
                     return 0;
                 }, null);
-
+                _network.LearningRate = learningRate;
                 _network.TrainOnData(data, maxIterations, iterationsBetweenReports, desiredError);
             }
 
@@ -121,133 +126,55 @@ namespace DataEditor
             Status = NetworkStatus.NotTrained;
         }
 
-        private uint _numberOfInputs = 55;
-        private uint _numberOfOutputs = 35;
-        private float _learningRate = 0.35f;
-        private double _activationSteepnessHidden = 0.5;
-        private double _activationSteepnessOutput = 1.0;
-        private ActivationFunction _activationFunctionHidden = ActivationFunction.SIGMOID_SYMMETRIC;
-        private ActivationFunction _activationFunctionOutput = ActivationFunction.SIGMOID_SYMMETRIC;
-        private TrainingAlgorithm _trainingAlgorithm = TrainingAlgorithm.TRAIN_RPROP;
-
         public NetworkStatus Status { get; private set; }
 
-        public uint NumberOfInputs
-        {
-            get => _numberOfInputs;
-            set
-            {
-                if (_numberOfOutputs == value)
-                {
-                    return;
-                }
-
-                _numberOfInputs = value;
-                DestroyNetwork();
-            }
-        }
-
+        public uint NumberOfInputs { get; set; }
+        public uint NumberOfOutputs { get; set; }
         public ObservableCollection<NetworkLayer> HiddenLayers { get; } = new ObservableCollection<NetworkLayer>
         {
             new NetworkLayer(400)
         };
 
-        public uint NumberOfOutputs
+        public double ActivationSteepnessHidden { get; set; } = 0.5;
+        public double ActivationSteepnessOutput { get; set; } = 1.0;
+        public ActivationFunction ActivationFunctionHidden { get; set; } = ActivationFunction.SIGMOID_SYMMETRIC;
+        public ActivationFunction ActivationFunctionOutput { get; set; } = ActivationFunction.SIGMOID_SYMMETRIC;
+        public TrainingAlgorithm TrainingAlgorithm { get; set; } = TrainingAlgorithm.TRAIN_RPROP;
+
+        private void OnNumberOfInputsChanged()
         {
-            private get { return _numberOfOutputs; }
-            set
-            {
-                if (_numberOfOutputs == value)
-                {
-                    return;
-                }
-                _numberOfOutputs = value;
-                DestroyNetwork();
-            }
+            DestroyNetwork();
         }
 
-        public float LearningRate
+        private void OnNumberOfOutputsChanged()
         {
-            get => _learningRate;
-            set
-            {
-                _learningRate = value;
-
-                if (_network != null)
-                {
-                    _network.LearningRate = value;
-                }
-            }
+            DestroyNetwork();
         }
 
-        public double ActivationSteepnessHidden
+        private void OnActivationSteepnessHiddenChanged() => OnNetworkPropertyChanged();
+
+        private void OnActivationSteepnessOutputChanged() => OnNetworkPropertyChanged();
+
+        private void OnActivationFunctionOutputChanged() => OnNetworkPropertyChanged();
+
+        private void OnActivationFunctionHiddenChanged() => OnNetworkPropertyChanged();
+
+        private void OnTrainingAlgorithmChanged() => OnNetworkPropertyChanged();
+
+        private void OnNetworkPropertyChanged()
         {
-            get => _activationSteepnessHidden;
-            set
+            Status = NetworkStatus.NotTrained;
+
+            if (_network == null)
             {
-                _activationSteepnessHidden = value;
-
-                if (_network != null)
-                {
-                    _network.ActivationSteepnessHidden = value;
-                }
+                return;
             }
-        }
 
-        public double ActivationSteepnessOutput
-        {
-            get => _activationSteepnessOutput;
-            set
-            {
-                _activationSteepnessOutput = value;
-
-                if (_network != null)
-                {
-                    _network.ActivationSteepnessOutput = value;
-                }
-            }
-        }
-
-        public ActivationFunction ActivationFunctionHidden
-        {
-            get => _activationFunctionHidden;
-            set
-            {
-                _activationFunctionHidden = value;
-
-                if (_network != null)
-                {
-                    _network.ActivationFunctionHidden = value;
-                }
-            }
-        }
-
-        public ActivationFunction ActivationFunctionOutput
-        {
-            get => _activationFunctionOutput;
-            set
-            {
-                _activationFunctionOutput = value;
-
-                if (_network != null)
-                {
-                    _network.ActivationFunctionOutput = value;
-                }
-            }
-        }
-
-        public TrainingAlgorithm TrainingAlgorithm
-        {
-            get => _trainingAlgorithm;
-            set
-            {
-                _trainingAlgorithm = value;
-
-                if (_network != null)
-                {
-                    _network.TrainingAlgorithm = value;
-                }
-            }
+            _network.ActivationSteepnessHidden = ActivationSteepnessHidden;
+            _network.ActivationSteepnessOutput = ActivationSteepnessOutput;
+            _network.ActivationFunctionOutput = ActivationFunctionOutput;
+            _network.ActivationFunctionHidden = ActivationFunctionHidden;
+            _network.TrainingAlgorithm = TrainingAlgorithm;
         }
 
         private NeuralNet _network;

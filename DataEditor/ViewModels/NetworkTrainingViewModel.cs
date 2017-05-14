@@ -98,8 +98,7 @@ namespace DataEditor.ViewModels
             _network.NumberOfInputs = (uint) _patternContainer.Patterns.First().Pixels.Length;
             _network.NumberOfOutputs = (uint) _patternContainer.Patterns.GroupBy(x => x.Name).Count();
 
-            _network.LearningRate = LearningRate;
-            _network.Train(trainFile, MaxIterations, IterationsBetweenReports, DesiredError, (epochs, cost) =>
+            _network.Train(trainFile, MaxIterations, IterationsBetweenReports, LearningRate, DesiredError, (epochs, cost) =>
             {
                 _dispatcher.Invoke(() =>
                 {
