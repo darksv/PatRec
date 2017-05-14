@@ -46,7 +46,7 @@
             <ItemsControl.Resources>
                 <Style x:Key="ValueStyle" TargetType="TextBlock">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsHighest}" Value="False">
+                        <DataTrigger Binding="{Binding (viewModels:NetworkTestingViewModel+Prediction.IsHighest)}" Value="False">
                             <Setter Property="Foreground" Value="LightGray" />
                         </DataTrigger>
                     </Style.Triggers>
