@@ -27,12 +27,12 @@ namespace DataEditor
             set => SetValue(ResponseTextProperty, value);
         }
        
-        public ICommand OkCommand => new RelayCommand(x =>
+        public ICommand OkCommand => new RelayCommand(() =>
         {
             DialogResult = true;
         });
 
-        public ICommand CancelCommand => new RelayCommand(x =>
+        public ICommand CancelCommand => new RelayCommand(() =>
         {
             DialogResult = false;
         });

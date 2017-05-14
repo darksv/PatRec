@@ -6,24 +6,21 @@ namespace DataEditor
 {
     public class AsyncRelayCommand : ICommand
     {
-        private readonly Func<object, Task> _action;
+        private readonly Func<Task> _action;
 
-        private readonly Predicate<object> _canExecute;
-
-        public AsyncRelayCommand(Func<object, Task> action, Predicate<object> canExecute = null)
+        public AsyncRelayCommand(Func<Task> action)
         {
             _action = action;
-            _canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute?.Invoke(parameter) ?? true;
+            return true;
         }
 
         public async void Execute(object parameter)
         {
-            await _action.Invoke(parameter);
+            await _action.Invoke();
         }
 
         public event EventHandler CanExecuteChanged;

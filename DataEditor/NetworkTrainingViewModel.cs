@@ -1,4 +1,4 @@
-﻿using System;x
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -43,8 +43,8 @@ namespace DataEditor
             _patternContainer = patternContainer;
             _dispatcher = currentDispatcher;
 
-            StartTrainingCommand = new AsyncRelayCommand(x => StartTraining());
-            CancelTrainingCommand = new RelayCommand(x => CancelTraining());
+            StartTrainingCommand = new AsyncRelayCommand(StartTraining);
+            CancelTrainingCommand = new RelayCommand(CancelTraining);
         }
 
         public ObservableCollection<EpochInfo> Epochs { get; } = new ObservableCollection<EpochInfo>();

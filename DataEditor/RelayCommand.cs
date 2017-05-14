@@ -5,24 +5,43 @@ namespace DataEditor
 {
     public class RelayCommand : ICommand
     {
-        private readonly Action<object> _action;
+        private readonly Action _action;
 
-        private readonly Predicate<object> _canExecute;
-
-        public RelayCommand(Action<object> action, Predicate<object> canExecute = null)
+        public RelayCommand(Action action)
         {
             _action = action;
-            _canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute?.Invoke(parameter) ?? true;
+            return true;
         }
 
         public void Execute(object parameter)
         {
-            _action?.Invoke(parameter);
+            _action?.Invoke();
+        }
+
+        public event EventHandler CanExecuteChanged;
+    }
+
+    public class RelayCommand<T> : ICommand
+    {
+        private readonly Action<T> _action;
+
+        public RelayCommand(Action<T> action)
+        {
+            _action = action;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            _action?.Invoke((T)parameter);
         }
 
         public event EventHandler CanExecuteChanged;

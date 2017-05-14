@@ -1,7 +1,6 @@
 ﻿using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Microsoft.Win32;
@@ -33,8 +32,6 @@ namespace DataEditor
 
         public ICommand NewPatternCommand { get; }
 
-        public ICommand SaveToFannCommand { get; }
-
         public ICommand SaveToXmlCommand { get; }
 
         public ICommand LoadFromXmlCommand { get; }
@@ -64,11 +61,10 @@ namespace DataEditor
                     .ToArray();
             };
             
-            AddToTrainingSetCommand = new RelayCommand(x => AddToTrainingSet());
-            NewPatternCommand = new RelayCommand(x => NewPattern());
-            SaveToFannCommand = new RelayCommand(x => {});
-            SaveToXmlCommand = new RelayCommand(x => SaveToXml());
-            LoadFromXmlCommand = new RelayCommand(x => LoadFromXml());
+            AddToTrainingSetCommand = new RelayCommand(AddToTrainingSet);
+            NewPatternCommand = new RelayCommand(NewPattern);
+            SaveToXmlCommand = new RelayCommand(SaveToXml);
+            LoadFromXmlCommand = new RelayCommand(LoadFromXml);
         }
 
         private void AddToTrainingSet()

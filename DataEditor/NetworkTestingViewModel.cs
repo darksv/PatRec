@@ -14,8 +14,8 @@ namespace DataEditor
         {
             _network = network;
             _patternContainer = patternContainer;
-            PredictCommand = new RelayCommand(x => Predict());
-            AddToTrainingSetCommand = new RelayCommand(x =>
+            PredictCommand = new RelayCommand(Predict);
+            AddToTrainingSetCommand = new RelayCommand(() =>
             {
                 var dialog = new SavePatternAsDialog
                 {

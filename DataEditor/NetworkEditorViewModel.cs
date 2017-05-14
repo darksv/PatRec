@@ -17,14 +17,14 @@ namespace DataEditor
 
         public NeuralNetwork Network { get; private set; }
 
-        public ICommand AddLayerCommand => new RelayCommand(x =>
+        public ICommand AddLayerCommand => new RelayCommand(() =>
         {
             Network.HiddenLayers.Add(new NetworkLayer(Network.NumberOfInputs));
         });
 
-	    public ICommand RemoveLayerCommand => new RelayCommand(x =>
+	    public ICommand RemoveLayerCommand => new RelayCommand<NetworkLayer>(layer =>
 	    {
-	        Network.HiddenLayers.Remove((NetworkLayer) x);
+	        Network.HiddenLayers.Remove(layer);
 	    });
 
         public NetworkEditorViewModel(NeuralNetwork network)
