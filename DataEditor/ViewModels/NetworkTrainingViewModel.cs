@@ -27,7 +27,7 @@ namespace DataEditor.ViewModels
 
         public float LearningRate { get; set; } = 0.35f;
 
-        public float DesiredError { get; set; } = 0.0025f;
+        public float DesiredError { get; set; } = 0.000025f;
 
         public uint MaxIterations { get; set; } = 1000;
 

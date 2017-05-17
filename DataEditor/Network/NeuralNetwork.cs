@@ -143,7 +143,7 @@ namespace DataEditor
         public uint NumberOfOutputs { get; set; }
         public ObservableCollection<NetworkLayer> HiddenLayers { get; } = new ObservableCollection<NetworkLayer>
         {
-            new NetworkLayer(400)
+            new NetworkLayer(600)
         };
 
         public double ActivationSteepnessHidden { get; set; } = 0.5;

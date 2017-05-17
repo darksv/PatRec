@@ -1,4 +1,5 @@
-﻿using System.Windows.Threading;
+﻿using System.IO;
+using System.Windows.Threading;
 using DataEditor.Network;
 using PropertyChanged;
 
@@ -18,6 +19,12 @@ namespace DataEditor.ViewModels
             NetworkEditor = new NetworkEditorViewModel(_network);
             NetworkTraining = new NetworkTrainingViewModel(_network, _patternContainer, Dispatcher.CurrentDispatcher);
             NetworkTesting = new NetworkTestingViewModel(_network, _patternContainer);
+
+            const string defaultFileName = "patterns.xml";
+            if (File.Exists(defaultFileName))
+            {
+                _patternContainer.LoadFromXml(defaultFileName);
+            }
         }
 
         private readonly NeuralNetwork _network = new NeuralNetwork();
